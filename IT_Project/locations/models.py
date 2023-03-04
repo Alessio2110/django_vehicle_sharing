@@ -22,7 +22,7 @@ class Location(models.Model):
 class CustomUser(AbstractUser):
     is_operator = models.BooleanField(default=False)
     balance = models.DecimalField(max_digits=6, decimal_places=2,default=10.00)
-
+    
     def is_an_operator(self):
         return self.is_operator
 
