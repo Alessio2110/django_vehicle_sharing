@@ -31,27 +31,42 @@ class CustomUser(AbstractUser):
     
     def __str__(self):
         return self.username
-    
-class VehicleType(models.Model):
-    name = models.CharField(max_length=10, choices=[('bike', 'Bike'), ('scooter', 'Scooter'), ('car', 'Car')])
 
+class VehicleType(models.Model):
+    name = models.CharField(max_length=10)
+    cost_per_minute_in_cent = models.IntegerField(default= 30)
+    cost_for_initial_order = models.IntegerField(default = 50)
     def __str__(self):
         return self.name
-
+    
 class Vehicle(models.Model):
     type = models.ForeignKey(VehicleType, on_delete=models.CASCADE)
-    # repairs = models.ManyToManyField('Repair')
+    
+class Order(models.Model):
+    customer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
+    initial_time = models.TimeField(auto_now_add=True)
+    final_time = models.TimeField()
+    initial_location = models.ForeignKey(Location, on_delete=models.CASCADE, null=False, related_name='start')
+    final_location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, related_name='end')
+    is_paid = models.BooleanField(default=False)
 
+class Report(models.Model):
+    text = models.TextField(max_length="255")
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    
+class ReportType(models.Model):
+    report_type = models.TextField(max_length="63", default="Other issues")
+
+
+# The ones below this line are the tables concerning operators
+# Operators will likely not be included in the project, so ignore them!
+
+# Probably not going to be used
 class Repair(models.Model):
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
     operator = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
-class Order(models.Model):
-    customer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
 
-class Report(models.Model):
-    text = models.TextField()
-    order = models.ForeignKey(Order, null=True, blank=True, on_delete=models.SET_NULL)
 
 

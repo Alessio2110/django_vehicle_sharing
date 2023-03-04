@@ -26,30 +26,27 @@ def register(request):
         cust_name = request.POST.get("cust_name").strip()
         username = request.POST.get("username").strip()
         passwd = request.POST.get("passwd").strip()
-        # check whether the username inputed is in the database
-        # insert to the Customer table
-        # with sqlite3.connect("./vehicle_share.db") as db:
-        #     cursor = db.cursor()
-        # cursor.execute(
-        # """SELECT cust_username
-        #         From Customer
-        #         WHERE cust_username= '{}' """.format(username)
-        # )
-        # res = cursor.fetchone()
-        # if res:
-        #     db.close()
-        #     messages.error(request, "The username existed. Reenter, please.")
-        #     return redirect("/register")
-        # else:
-        #     salt = create_salt()
-        #     passwd = create_md5(passwd, salt)
-        #     cursor.execute(
-        #         """INSERT INTO customer (cust_username, cust_pw, pwd_salt, cust_name)
-        #             VALUES ('{}', '{}', '{}', '{}')""".format(username, passwd, salt, cust_name)
-        #     )
-        #     db.commit()
-        #     db.close()
-        #     # return redirect("/login")
-        #     return redirect("/")
+
+        with sqlite3.connect("./db.sqlite3") as db:
+            cursor = db.cursor()
+        cursor.execute(
+        """SELECT cust_username
+                From Customer
+                WHERE cust_username= '{}' """.format(username)
+        )
+        res = cursor.fetchone()
+        if res:
+            db.close()
+            messages.error(request, "The username existed. Reenter, please.")
+            return redirect("/register")
+        else:
+            cursor.execute(
+                """INSERT INTO customer (cust_username, cust_pw, pwd_salt, cust_name)
+                    VALUES ('{}', '{}', '{}', '{}')""".format(username, passwd, salt, cust_name)
+            )
+            db.commit()
+            db.close()
+            # return redirect("/login")
+            return redirect("/")
     else:
         return render(request, "register.html")
