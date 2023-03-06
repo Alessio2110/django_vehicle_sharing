@@ -40,6 +40,10 @@ def register(request):
             db.close()
             messages.error(request, "Sorry,the username existed.")
             return redirect("/register")
+        elif username=='' or passwd=='' or fullname=='':
+            db.close()
+            messages.error(request, "Sorry,the username or passwd or fullname null.")
+            return redirect("/register")
         else:
             cursor.execute(
                 """INSERT INTO userlist (fullname, username, passwd, userrole)
@@ -51,3 +55,43 @@ def register(request):
             return redirect("/")
     else:
         return render(request, "locations/register.html")
+
+def login(request):
+    if request.method == "POST":
+        username = request.POST.get("username").strip()
+        passwd = request.POST.get("passwd").strip()
+        userRole = request.POST.get("userRole").strip()
+
+        with sqlite3.connect("./db.sqlite3") as db:
+            cursor = db.cursor()
+            cursor.execute(
+                """SELECT fullname, username, passwd, userrole
+                    From userlist
+                    WHERE username= '{}' """.format(username)
+        )
+        res = cursor.fetchone()
+        db.close()
+        if res:
+            if passwd == res[2] and userRole == res[3]:
+                request.session["fullname"] = res[0]
+                request.session["username"] = res[1]
+                request.session["passwd"] = res[2]
+                request.session["userrole"] = res[3]
+                return redirect("/")
+                # return redirect("/customer")
+
+            else:
+                 messages.error(request, "The password or userRole is wrong.")
+                 # return render(request, "login.html")
+                 return redirect("/login")
+        else:
+            messages.error(request, "The username does not exist.")
+            #return render(request, "login.html")
+            return redirect("/login")
+
+    # elif request.method == "GET":
+    #     return redirect("/register")
+
+    else:
+        return render(request, "locations/login.html")
+
