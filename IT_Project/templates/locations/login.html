@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+<style>
+</style>
+</head>
+<body>
+	<div id=a>
+		<form class='box' name="form_login" method="post" action="/login/">
+			{% csrf_token %}
+			<h1>Login</h1>
+			<input type="text" class=b name="username" placeholder="Username"/> <br>
+			<input type="password"  class=b name="passwd" placeholder="Password"/> <br>
+			<select name = "userRole" id="type" type="text">
+				<option value="customer">customer</option>
+				<option value="manager">manager</option>
+			</select>
+			<input type="submit" name="Login" value="Login" /> 
+			<button onclick="window.location.href='/register/'" type="button" id="add">register</button>
+	    </form>
+	</div>
+</body>
+<script>
+	{% if messages %}
+		{% for msg in messages %}
+		alert('Message type: {{ msg.tags }}. Message content: {{ msg }}');
+		{% endfor %}
+	{% endif %}
+</script>
+</html>
