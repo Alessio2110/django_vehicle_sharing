@@ -6,18 +6,28 @@ from django.shortcuts import render, redirect, HttpResponse
 
 # Create your views here.
 
-class LocationView(CreateView):
+# class LocationView(CreateView):
 
-    model = Location
-    fields = ['address']
-    template_name = 'locations/home.html'
-    success_url = '/'
+#     model = Location
+#     fields = ['address']
+#     template_name = 'locations/home.html'
+#     success_url = '/'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['locations'] = Location.objects.all()
-        context['mapbox_access_token'] = 'pk.eyJ1IjoiYWxlc3NpbzIxIiwiYSI6ImNsZWszb2twMzBoa3QzcHBnNnhqbHIwMHUifQ.AW2-2b4IYh4qqPqqzMXy8Q'
-        return context
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['locations'] = Location.objects.all()
+#         context['mapbox_access_token'] = 'pk.eyJ1IjoiYWxlc3NpbzIxIiwiYSI6ImNsZWszb2twMzBoa3QzcHBnNnhqbHIwMHUifQ.AW2-2b4IYh4qqPqqzMXy8Q'
+        
+#         return context
+
+def index(request):
+    context = {}
+    context['mapbox_access_token'] = 'pk.eyJ1IjoiYWxlc3NpbzIxIiwiYSI6ImNsZWszb2twMzBoa3QzcHBnNnhqbHIwMHUifQ.AW2-2b4IYh4qqPqqzMXy8Q'
+    context['locations'] = Location.objects.all()
+    locations_with_bike = Location.objects.filter(vehicle__type__name='Bike').distinct()
+    context['locations_bike'] = locations_with_bike
+    response = render(request, 'locations/home.html', context=context)
+    return response
 
 
 

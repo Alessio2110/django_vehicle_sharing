@@ -1,8 +1,11 @@
 from django.urls import path
-from .views import LocationView
+# from .views import LocationView
+from locations import views
 
 app_name = 'location'
 
 urlpatterns = [
-    path('', LocationView.as_view(), name='home')
+    path('', views.index, name='home'),
+    path('/vehicle', views.index, name='vehicle'),
+
 ]
