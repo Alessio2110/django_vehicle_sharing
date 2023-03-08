@@ -23,16 +23,17 @@ class LocationView(CreateView):
 
 def register(request):
     if request.method == "POST":
-        fullname = request.POST.get("fullname").strip()
+        firstname = request.POST.get("firstname").strip()
+        lastname = request.POST.get("lastname").strip()
         username = request.POST.get("username").strip()
         passwd = request.POST.get("passwd").strip()
-        userRole = request.POST.get("userRole").strip()
+        email =  request.POST.get("email").strip()
 
         with sqlite3.connect("./db.sqlite3") as db:
             cursor = db.cursor()
             cursor.execute(
             """SELECT username
-                    From userlist
+                    From locations_customuser
                     WHERE username= '{}' """.format(username)
         )
         res = cursor.fetchone()
@@ -40,14 +41,14 @@ def register(request):
             db.close()
             messages.error(request, "Sorry,the username existed.")
             return redirect("/register")
-        elif username=='' or passwd=='' or fullname=='':
+        elif username=='' or passwd=='' or firstname=='' or lastname=='':
             db.close()
-            messages.error(request, "Sorry,the username or passwd or fullname null.")
+            messages.error(request, "Sorry,the username or passwd or firstname or lastname null.")
             return redirect("/register")
         else:
             cursor.execute(
-                """INSERT INTO userlist (fullname, username, passwd, userrole)
-                    VALUES ('{}', '{}', '{}', '{}')""".format(fullname,username, passwd, userRole)
+                """INSERT INTO locations_customuser (password,is_superuser,username , first_name, last_name,email,is_staff,is_active,date_joined,is_operator,balance)
+                    VALUES ('{}', '{}', '{}', '{}','{}','{}','{}','{}','{}','{}','{}')""".format(passwd,0,username, firstname,lastname, email,0,0,0,0,0)
             )
             db.commit()
             db.close()
@@ -60,28 +61,23 @@ def login(request):
     if request.method == "POST":
         username = request.POST.get("username").strip()
         passwd = request.POST.get("passwd").strip()
-        userRole = request.POST.get("userRole").strip()
 
         with sqlite3.connect("./db.sqlite3") as db:
             cursor = db.cursor()
             cursor.execute(
-                """SELECT fullname, username, passwd, userrole
-                    From userlist
+                """SELECT  username, password
+                    From locations_customuser
                     WHERE username= '{}' """.format(username)
         )
         res = cursor.fetchone()
         db.close()
         if res:
-            if passwd == res[2] and userRole == res[3]:
-                request.session["fullname"] = res[0]
-                request.session["username"] = res[1]
-                request.session["passwd"] = res[2]
-                request.session["userrole"] = res[3]
+            if passwd == res[1]:
                 return redirect("/")
                 # return redirect("/customer")
 
             else:
-                 messages.error(request, "The password or userRole is wrong.")
+                 messages.error(request, "The password is wrong.")
                  # return render(request, "login.html")
                  return redirect("/login")
         else:
