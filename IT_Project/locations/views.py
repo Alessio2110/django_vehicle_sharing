@@ -91,3 +91,4 @@ def login(request):
     else:
         return render(request, "locations/login.html")
 
+
