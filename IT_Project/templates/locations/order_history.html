@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Order History</h1>
+  <ul>
+    {% for order in orders %}
+      <li>Order ID: {{ order.id }}</li>
+      <li>Initial Time: {{ order.initial_time }}</li>
+      <li>Final Time: {{ order.final_time }}</li>
+      <li>Is Paid: {{ order.is_paid }}</li>
+      <li>Customer ID: {{ order.customer_id }}</li>
+      <li>Final Location ID: {{ order.final_location_id }}</li>
+      <li>Initial Location ID: {{ order.initial_location_id }}</li>
+      <li>Vehicle ID: {{ order.vehicle_id }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
