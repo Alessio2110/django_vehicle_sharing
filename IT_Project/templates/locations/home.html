@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+    {% load static %}
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,10 +17,15 @@
 <body>
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js">
     </script>
+    <script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
     <link rel="stylesheet"
         href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css"
         type="text/css">
     <h1> Django Home </h1> 
+    <div class="vehicle-selection">
+        <img id="bike-icon" class="vehicle-icon" src="{% static 'images/bike.svg' %}" alt="Bike">
+        <img id="scooter-icon" class="vehicle-icon" src="{% static 'images/scooter.svg' %}" alt="Scooter">
+      </div>
 <div id="map"></div>
 <div>
     {% if user.is_authenticated %}
@@ -30,12 +36,48 @@
         <!-- code for unauthenticated user -->
     {% endif %}
  </div>
+ <div> <button id="search">Click me</button> </div>
+ <style>
+    .vehicle-selection {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      
+      .vehicle-icon {
+        width: 100px;
+        height: 100px;
+        margin: 10px;
+        cursor: pointer;
+      }
+      
+      .vehicle-icon.selected {
+        border: 3px solid green;
+      }
+      
+      .vehicle-icon:not(.selected) {
+        filter: grayscale(100%);
+      }
+ </style>
 <script>
+    const bikeIcon = document.getElementById("bike-icon");
+    bikeIcon.classList.add("selected");
+    const scooterIcon = document.getElementById("scooter-icon");
+
+    bikeIcon.addEventListener("click", () => {
+    bikeIcon.classList.add("selected");
+    scooterIcon.classList.remove("selected");
+    });
+
+    scooterIcon.addEventListener("click", () => {
+    scooterIcon.classList.add("selected");
+    bikeIcon.classList.remove("selected");
+    });
+
     mapboxgl.accessToken = '{{ mapbox_access_token }}';
     const map = new mapboxgl.Map({
     container: 'map', // container ID
     // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
-    //style: 'mapbox://styles/mapbox/streets-v12', // style URL
     //style: 'mapbox://styles/mapbox/navigation-night-v1',
     style: 'mapbox://styles/mapbox/streets-v12',
 
@@ -45,7 +87,6 @@
 });
 
 my_marker = null;
-
 
 geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
@@ -62,20 +103,6 @@ geocoder = new MapboxGeocoder({
     }
 })
 
-{% comment %} geocoder.on('result', e => {
-    const marker = new mapboxgl.Marker({
-      draggable: true,
-      color: 'red'
-    })
-    .setLngLat(e.result.center)
-    .addTo(map)
-    marker.on('dragend',function(e){
-      var lngLat = e.target.getLngLat();
-      console.log(lngLat['lat'])
-      console.log(lngLat['lng'])
-    })
-  }) {% endcomment %}
-
   geocoder.on('result', e => {
     // Remove previous marker if it exists
     if (my_marker) {
@@ -86,17 +113,34 @@ geocoder = new MapboxGeocoder({
     // Create new marker
     my_marker = new mapboxgl.Marker({
       draggable: true,
-      color: 'red'
+      color: 'red',
+      symbol: 'bicycle'
     })
     .setLngLat(e.result.center)
     .addTo(map);
     
-    marker.on('dragend', function(e) {
+    my_marker.on('dragend', function(e) {
         var lngLat = e.target.getLngLat();
         console.log(lngLat['lat'])
         console.log(lngLat['lng'])
     });
 });
+
+function find_closest(){
+    if (my_marker == null)
+        return;
+    lngLat = my_marker.getLngLat()
+    smallest_distance = 1000
+    coordinates = null
+    {% for loc in locations %}
+        distance = turf.distance([{{loc.longitude}}, {{loc.latitude}}], [lngLat['lng'], lngLat['lat']])
+        if (distance.toFixed([2])  < smallest_distance){
+            smallest_distance = distance
+            coordinates = [ {{loc.longitude}}, {{loc.latitude}}]
+        }
+    {% endfor %} 
+    map.setCenter(coordinates)
+}
 
 map.addControl(geocoder)
         map.on('load', function () {
@@ -117,6 +161,12 @@ map.addControl(geocoder)
             });
         });
 
+const bounds = [
+[-4.29, 55.855], // Bottom left
+[-4.24, 55.87]  // Top right
+];
+// Set the map's max bounds.
+map.setMaxBounds(bounds);
 {% for loc in locations %}
     var marker = new mapboxgl.Marker()
         .setLngLat([{{ loc.longitude }}, {{ loc.latitude }}])
@@ -124,6 +174,23 @@ map.addControl(geocoder)
         .addTo(map)
 {% endfor %} 
 
+map.on('click', '.mapboxgl-marker', function() {
+    console.log("hello");
+  });
+
+  {% for loc in locations_bike %}
+      console.log({{ loc.longitude }}, {{ loc.latitude }})
+{% endfor %} 
+const myButton = document.getElementById('search');
+myButton.addEventListener('click', find_closest);
+
+function myFunction() {
+  console.log('Button clicked!');
+}
+//Generate a function and two numbers
+
 </script>
 </body>
 </html> 
+
+
