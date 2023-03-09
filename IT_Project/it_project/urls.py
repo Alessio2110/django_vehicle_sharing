@@ -23,5 +23,4 @@ urlpatterns = [
     path('', include('locations.urls')),
     path('register/', views.register),
     path('login/', views.login),
-    path('order_history/', include('order_history.urls')),
 ]

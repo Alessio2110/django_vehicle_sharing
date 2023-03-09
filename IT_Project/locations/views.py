@@ -104,7 +104,7 @@ def login(request):
     else:
         return render(request, "locations/login.html")
 
-def order_history(request, customer_id):
-    orders = Order.objects.filter(customer_id=customer_id)
-    context = {'orders': orders}
-    return render(request, 'order_history.html', context)
+
+def order_history(request):
+
+    return render(request, 'order_history.html')

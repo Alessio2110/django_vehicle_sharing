@@ -72,7 +72,7 @@ class Report(models.Model):
 #     operator = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 
-class Order(models.Model):
+class locations_order(models.Model):
     id = models.IntegerField(primary_key=True)
     initial_time = models.DateTimeField()
     final_time = models.DateTimeField()
@@ -82,5 +82,7 @@ class Order(models.Model):
     initial_location_id = models.IntegerField()
     vehicle_id = models.IntegerField()
 
-
+class locations_customuser_id(models.Model):
+    id = models.IntegerField(primary_key=True)
+    username = models.CharField(max_length=32)
 

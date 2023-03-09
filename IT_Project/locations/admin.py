@@ -5,4 +5,3 @@ from .models import CustomUser
 # Register your models here.
 admin.site.register(Location)
 admin.site.register(CustomUser, UserAdmin)
-admin.site.register(Order)
