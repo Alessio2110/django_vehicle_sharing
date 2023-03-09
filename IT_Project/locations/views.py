@@ -3,6 +3,8 @@ from django.contrib import messages
 from django.views.generic.edit import CreateView
 from .models import Location
 from django.shortcuts import render, redirect, HttpResponse
+from django.contrib.auth import authenticate, login
+
 
 # Create your views here.
 
@@ -67,38 +69,53 @@ def register(request):
     else:
         return render(request, "locations/register.html")
 
+# def login(request):
+#     if request.method == "POST":
+#         username = request.POST.get("username").strip()
+#         passwd = request.POST.get("passwd").strip()
+
+#         with sqlite3.connect("./db.sqlite3") as db:
+#             cursor = db.cursor()
+#             cursor.execute(
+#                 """SELECT  username, password
+#                     From locations_customuser
+#                     WHERE username= '{}' """.format(username)
+#         )
+#         res = cursor.fetchone()
+#         db.close()
+#         if res:
+#             if passwd == res[1]:
+#                 return redirect("/")
+#                 # return redirect("/customer")
+
+#             else:
+#                  messages.error(request, "The password is wrong.")
+#                  # return render(request, "login.html")
+#                  return redirect("/login")
+#         else:
+#             messages.error(request, "The username does not exist.")
+#             #return render(request, "login.html")
+#             return redirect("/login")
+
+#     # elif request.method == "GET":
+#     #     return redirect("/register")
+
+#     else:
+#         return render(request, "locations/login.html")
+
+
+# from django.contrib.auth import authenticate, login
+
 def login(request):
     if request.method == "POST":
         username = request.POST.get("username").strip()
-        passwd = request.POST.get("passwd").strip()
-
-        with sqlite3.connect("./db.sqlite3") as db:
-            cursor = db.cursor()
-            cursor.execute(
-                """SELECT  username, password
-                    From locations_customuser
-                    WHERE username= '{}' """.format(username)
-        )
-        res = cursor.fetchone()
-        db.close()
-        if res:
-            if passwd == res[1]:
-                return redirect("/")
-                # return redirect("/customer")
-
-            else:
-                 messages.error(request, "The password is wrong.")
-                 # return render(request, "login.html")
-                 return redirect("/login")
+        password = request.POST.get("passwd").strip()
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect("/")
         else:
-            messages.error(request, "The username does not exist.")
-            #return render(request, "login.html")
+            messages.error(request, "Invalid username or password.")
             return redirect("/login")
-
-    # elif request.method == "GET":
-    #     return redirect("/register")
-
     else:
         return render(request, "locations/login.html")
-
-

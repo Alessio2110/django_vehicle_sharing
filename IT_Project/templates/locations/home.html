@@ -28,11 +28,12 @@
       </div>
 <div id="map"></div>
 <div>
+    {{user}}
     {% if user.is_authenticated %}
     <h2> Rent! </h2>
     <!-- code for authenticated user -->
     {% else %}
-        <h2> Register here! </h2>
+        <h2> Register here! {{user.username}} </h2>
         <!-- code for unauthenticated user -->
     {% endif %}
  </div>
