@@ -1,8 +1,11 @@
 import sqlite3
 from django.contrib import messages
 from django.views.generic.edit import CreateView
-from .models import Location, Order
+
+from . import models
+from .models import Location, Order, locations_order, locations_customuser_id
 from django.shortcuts import render, redirect, HttpResponse
+
 
 from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404
@@ -107,4 +110,6 @@ def login(request):
 
 def order_history(request):
 
-    return render(request, 'order_history.html')
+    queryset = models.locations_order.objects.all()
+
+    return render(request, 'locations/order_history.html', {'queryset':queryset})
