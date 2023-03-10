@@ -1,6 +1,8 @@
 from django.db import models
 import geocoder
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
+
 # IMPORTANT!
 # Models are not finished!
 
@@ -22,8 +24,9 @@ class Location(models.Model):
         self.latitude, self.longitude = g[0], g[1]
         return super(Location, self).save(*args, **kwargs)
 
-class CustomUser(AbstractUser):
-    is_operator = models.BooleanField(default=False)
+class CustomUser(models.Model):
+    # is_operator = models.BooleanField(default=False)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     balance = models.DecimalField(max_digits=6, decimal_places=2,default=10.00)
 
     # def is_an_operator(self):

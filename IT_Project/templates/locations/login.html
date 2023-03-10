@@ -1,4 +1,5 @@
-{% load static %}
+{% extends "base.html" %}
+{% comment %} {% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,6 +9,9 @@
 </style>
 </head>
 <body>
+	{% if user.is_authenticated%}
+		Logout!
+	{% endif%}
 	<div id=a>
 		<form class='box' name="form_login" method="post" action="/login/">
 			{% csrf_token %}
@@ -26,4 +30,17 @@
 		{% endfor %}
 	{% endif %}
 </script>
-</html>
+</html> {% endcomment %}
+
+
+
+{% block title %}Log In{% endblock %}
+
+{% block content %}
+<h2>Log In</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Log In</button>
+</form>
+{% endblock %}
