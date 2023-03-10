@@ -48,4 +48,5 @@ def create_objects(sender, **kwargs):
                         type = VehicleType.objects.get(id = type),
                         location = Location.objects.get(id = location)
                     )
+    
 
