@@ -110,6 +110,12 @@ def login(request):
 
 def order_history(request):
 
-    queryset = models.locations_order.objects.all()
+    queryset = models.Order.objects.all()
 
     return render(request, 'locations/order_history.html', {'queryset':queryset})
+
+def order_detail(request,nid):
+
+    queryset = models.Order.objects.filter(id=nid)
+
+    return render(request, 'locations/order_detail.html', {'queryset':queryset})
