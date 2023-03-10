@@ -1,8 +1,14 @@
 import sqlite3
 from django.contrib import messages
 from django.views.generic.edit import CreateView
-from .models import Location
+
+from . import models
+from .models import Location, Order, locations_order, locations_customuser_id
 from django.shortcuts import render, redirect, HttpResponse
+
+
+from django.views.generic.list import ListView
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
@@ -102,3 +108,14 @@ def login(request):
         return render(request, "locations/login.html")
 
 
+def order_history(request):
+
+    queryset = models.Order.objects.all()
+
+    return render(request, 'locations/order_history.html', {'queryset':queryset})
+
+def order_detail(request,nid):
+
+    queryset = models.Order.objects.filter(id=nid)
+
+    return render(request, 'locations/order_detail.html', {'queryset':queryset})
