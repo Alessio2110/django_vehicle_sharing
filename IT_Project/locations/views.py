@@ -1,3 +1,4 @@
+import json
 import sqlite3
 from django.contrib import messages
 from django.views.generic.edit import CreateView
@@ -6,6 +7,8 @@ from . import models
 from .models import Location, Order, locations_order, locations_customuser_id
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
+from .models import Vehicle, Order, Location, CustomUser, User, VehicleType
 
 
 
@@ -32,8 +35,11 @@ def index(request):
     context = {}
     context['mapbox_access_token'] = 'pk.eyJ1IjoiYWxlc3NpbzIxIiwiYSI6ImNsZWszb2twMzBoa3QzcHBnNnhqbHIwMHUifQ.AW2-2b4IYh4qqPqqzMXy8Q'
     context['locations'] = Location.objects.all()
-    locations_with_bike = Location.objects.filter(vehicle__type__name='Bike').distinct()
-    context['locations_bike'] = locations_with_bike
+    locations_with_bikes = Location.objects.filter(vehicle__type__name='Bike').distinct()
+    locations_with_scooters = Location.objects.filter(vehicle__type__name='Scooter').distinct()
+    context['locations_with_bikes'] = locations_with_bikes
+    context['locations_with_scooters'] = locations_with_scooters
+
     response = render(request, 'locations/home.html', context=context)
     return response
 
@@ -138,3 +144,33 @@ def order_detail(request,nid):
     queryset = models.Order.objects.filter(id=nid)
 
     return render(request, 'locations/order_detail.html', {'queryset':queryset})
+
+def create_order(request):
+    if request.method != 'POST':
+        return render(request, 'locations/home.html')
+    data = json.loads(request.body)
+    username = data['username']
+    vehicle_type = data['vehicle_type']
+    loc_id = data['loc_id']
+    print(vehicle_type)
+    user = CustomUser.objects.get(user = User.objects.get(username = username))
+    location = Location.objects.get(id=loc_id)
+
+    vehicle = Vehicle.objects.filter(location=location, type = VehicleType.objects.get(name = vehicle_type)).order_by('id').first()
+    # vehicle = Vehicle.objects.get(id = 1)
+    # bike = Vehicle.objects.filter(id=1).distinct()
+
+    order = Order.objects.create(
+        customer = user,
+        vehicle = vehicle,
+        initial_location = location
+    )
+
+    return JsonResponse({'status': 'success'})
+
+
+
+
+
+    
+
