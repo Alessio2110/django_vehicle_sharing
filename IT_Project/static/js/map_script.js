@@ -5,6 +5,12 @@ const bikeIcon = document.getElementById("bike-icon");
 bikeIcon.classList.add("selected");
 const scooterIcon = document.getElementById("scooter-icon");
 
+my_marker = null; // Initialise red marker
+location_id = null; // initialise location_id
+current_markers = []; //initialise markers
+
+mapboxgl.accessToken = access_token; // Access token for mapbox
+
 // When bike icon is clicked
 bikeIcon.addEventListener("click", () => {
     if (selected == 'Bike')
@@ -17,7 +23,7 @@ bikeIcon.addEventListener("click", () => {
     selected = 'Bike'
 });
 
-// When scotoer icon is clicked
+// When scooter icon is clicked
 scooterIcon.addEventListener("click", () => {
     if (selected == 'Scooter')
         return;
@@ -28,8 +34,7 @@ scooterIcon.addEventListener("click", () => {
     bikeIcon.classList.remove("selected");
     selected = 'Scooter'
 });
-// Access token for mapbox
-mapboxgl.accessToken = access_token;
+
 
 // Create map
 const map = new mapboxgl.Map({
@@ -38,10 +43,6 @@ const map = new mapboxgl.Map({
     center: [-4.25, 55.865], // starting position, Glasgow City Centre
     zoom: 14 // starting zoom
 });
-
-my_marker = null; // Initialise red marker
-location_id = null; // initialise location_id
-current_markers = []; //initialise markers
 
 // geocoder for address search
 geocoder = new MapboxGeocoder({
@@ -103,6 +104,7 @@ function find_closest() {
     map.setZoom(18)
     console.log(coordinates)
     map.setCenter(coordinates)
+    map.setZoom(16)
 }
 
 map.addControl(geocoder)
@@ -132,6 +134,7 @@ const bounds = [
 // Set the map's max bounds.
 map.setMaxBounds(bounds);
 
+// Add markers
 function addMarkers(){
     for (var i = 0; i < locations.length; i++) {
         var loc = locations[i];
@@ -146,6 +149,7 @@ function addMarkers(){
 }
 addMarkers()
 
+// Remove all markers
 function removeMarkers(){
     if (current_markers!==null) {
         for (var i = current_markers.length - 1; i >= 0; i--) {
@@ -154,15 +158,10 @@ function removeMarkers(){
     }
 }
 
-
 const myButton = document.getElementById('search');
 myButton.addEventListener('click', find_closest);
 
-function myFunction() {
-  console.log('Button clicked!');
-}
-//Generate a function and two numbers
-
+//AJAX POST REQUEST: CREATE ORDER
 function createOrder(){
     fetch('/create_order/', {
         method: 'POST',
