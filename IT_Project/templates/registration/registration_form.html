@@ -5,11 +5,19 @@
 Register
 
 {% endblock %}
-{% block body_block %}
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}"> 
+
+{% endblock %}
+{% block content %}
 <h1>Register Here</h1>
 <form method="post" action=".">
 {% csrf_token %}
 {{ form.as_p }}
 <input type="submit" value="Register" />
 </form>
+<p>
+Alrady registered?
+<a href="/accounts/login/"> Sign in!</a>
+</p>
 {% endblock %}
