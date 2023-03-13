@@ -48,12 +48,14 @@ class VehicleType(models.Model):
 class Vehicle(models.Model):
     type = models.ForeignKey(VehicleType, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.DO_NOTHING)
+    is_available = models.BooleanField(default=True)
     
 class Order(models.Model):
     customer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
-    initial_time = models.TimeField(auto_now_add=True)
-    final_time = models.TimeField(null = True)
+    initial_time = models.DateTimeField(auto_now_add=True)
+    cost = models.DecimalField(max_digits=6, decimal_places=2, null = True, default=None)
+    final_time = models.DateTimeField(null = True)
     initial_location = models.ForeignKey(Location, on_delete=models.CASCADE, null=False, related_name='start')
     final_location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, related_name='end')
     is_paid = models.BooleanField(default=False)
@@ -75,17 +77,17 @@ class Report(models.Model):
 #     operator = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 
-class locations_order(models.Model):
-    id = models.IntegerField(primary_key=True)
-    initial_time = models.TimeField(auto_now_add=True)
-    final_time = models.TimeField()
-    is_paid = models.BooleanField(default=False)
-    customer_id = models.IntegerField()
-    final_location_id = models.IntegerField()
-    initial_location_id = models.IntegerField()
-    vehicle_id = models.IntegerField()
+# class locations_order(models.Model):
+#     id = models.IntegerField(primary_key=True)
+#     initial_time = models.TimeField(auto_now_add=True)
+#     final_time = models.TimeField()
+#     is_paid = models.BooleanField(default=False)
+#     customer_id = models.IntegerField()
+#     final_location_id = models.IntegerField()
+#     initial_location_id = models.IntegerField()
+#     vehicle_id = models.IntegerField()
 
-class locations_customuser_id(models.Model):
-    id = models.IntegerField(primary_key=True)
-    username = models.CharField(max_length=32)
+# class locations_customuser_id(models.Model):
+#     id = models.IntegerField(primary_key=True)
+#     username = models.CharField(max_length=32)
 

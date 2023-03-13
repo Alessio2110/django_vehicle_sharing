@@ -22,6 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('locations.urls')),
     path('accounts/', include('registration.backends.simple.urls')),
-    path('register/', views.register),
-    path('login/', views.login),
+    # path('register/', views.register),
+    # path('login/', views.login),
 ]

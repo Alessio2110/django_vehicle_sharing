@@ -20,13 +20,11 @@
     href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css"
     type="text/css">
     
+    {% comment %} Store variables from context here {% endcomment %}
     <script>  
         var locations = [];
         username = '{{user.username}}'
-        {% comment %} {% for loc in locations %}
-        locations.push({longitude: {{loc.longitude}}, latitude: {{loc.latitude}}, address:'{{loc.address}}', id:'{{loc.id}}'})
-        {% endfor %}  {% endcomment %}
-    
+        
         var locations_with_bikes = [];
         {% for loc in locations_with_bikes %}
         locations_with_bikes.push({longitude: {{loc.longitude}}, latitude: {{loc.latitude}}, address:'{{loc.address}}', id:'{{loc.id}}'})
@@ -38,6 +36,8 @@
         {% endfor %}
     
         access_token = '{{ mapbox_access_token }}'
+        success_url = "{% url 'locations:return_order' %}"
+        login_url = "{% url 'auth_login' %}"
     </script>
 
 {% endblock %}
@@ -50,22 +50,22 @@
         <img id="scooter-icon" class="vehicle-icon" src="{% static 'images/scooter.svg' %}" alt="Scooter">
       </div>
 <div id="map"></div>
-<div>
-    {% comment %} Store variables from context here {% endcomment %}
+<div class="container">
     
-<div> <button id="search"> Find nearest vehicle</button> </div>
+    <button id="search"> Find nearest vehicle</button> 
     {% if user.is_authenticated %}
-    <button id="create-order-button" onclick="createOrder()">Create Order</button>
-    <h2> Rent! </h2>
-    <!-- code for authenticated user -->
+    <button id="submit-button" onclick="createOrder()">Create Order</button>
     {% else %}
-        <h2> Register here! {{user.username}} </h2>
-        <!-- code for unauthenticated user -->
+    <button id="submit-button" onclick="loginEvent()"> Login to rent! </button>
     {% endif %}
  </div>
 
 
- <script type="text/javascript" src="{% static 'js/map_script.js' %}"></script>
+ {% comment %} <script type="text/javascript" src="{% static 'js/map_script.js' %}"></script> {% endcomment %}
+ <script type="text/javascript" src="{% static 'js/make_order.js' %}"></script>
+ <script type="text/javascript" src="{% static 'js/map_common.js' %}"></script>
+
+
 
  {% endblock %}
 

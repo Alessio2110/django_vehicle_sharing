@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/order.css' %}">
+
 </head>
 <body>
   <nav class="navbar navbar-default">
@@ -51,8 +53,9 @@
         <thead>
           <tr>
             <th>order ID</th>
-            <th>start time</th>
-            <th>final time</th>
+            <th> Rented on</th>
+            <th> Returned</th>
+            <th> Cost (£) </th>
             <th></th>
           </tr>
         </thead>
@@ -60,8 +63,13 @@
         {% for obj in queryset %}
           <tr>
             <th>{{obj.id}}</th>
-            <td>{{ obj.initial_time|date:"H:i" }}</td>
+            <td>{{ obj.initial_time|date:"H:i on  D, d M Y" }}</td>
             <td>{{ obj.final_time|date:"H:i" }}</td>
+            {% if obj.is_paid %}
+            <td class="cost"> {{ obj.cost}} </td>
+            {% else %}
+            <td> {{ obj.cost}} </td>
+            {% endif %}
             <td>
               <a class="btn btn-primary btn-xs" href="/order_history/{{obj.id}}/details/">details</a>
             </td>

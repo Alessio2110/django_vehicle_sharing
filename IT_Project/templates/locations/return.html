@@ -1,7 +1,7 @@
 {% extends "locations/base.html" %}
 {% load static %}
 
-{% block title %} Rent a vehicle {% endblock %}
+{% block title %} Return vehicle {% endblock %}
 
 {% block extrahead %}
     <meta charset="UTF-8">
@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css" rel="stylesheet">
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js">
     </script>
@@ -20,43 +20,42 @@
     href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css"
     type="text/css">
     
+    {% comment %} Needed to pass variables to the js script as js scripts do not have access to django objects {% endcomment %}
     <script>  
         var locations = [];
-        username = '{{user.username}}'
-        {% comment %} {% for loc in locations %}
+        {% for loc in locations %}
         locations.push({longitude: {{loc.longitude}}, latitude: {{loc.latitude}}, address:'{{loc.address}}', id:'{{loc.id}}'})
-        {% endfor %}  {% endcomment %}
-    
-        var locations_with_bikes = [];
-        {% for loc in locations_with_bikes %}
-        locations_with_bikes.push({longitude: {{loc.longitude}}, latitude: {{loc.latitude}}, address:'{{loc.address}}', id:'{{loc.id}}'})
         {% endfor %}  
-    
-        var locations_with_scooters = [];
-        {% for loc in locations_with_scooters %}
-        locations_with_scooters.push({longitude: {{loc.longitude}}, latitude: {{loc.latitude}}, address:'{{loc.address}}', id:'{{loc.id}}'})
-        {% endfor %}
+        username = '{{user.username}}'
     
         access_token = '{{ mapbox_access_token }}'
+
+        // Order variables
+        var datetimeString = "{{ initial_time }}";  // Get the datetime value from the Django object
+        order_id = {{ order_id}}
+        var cost_per_minute = {{ cost_per_minute}}
+        var cost_for_initial_order = {{cost_for_initial_order}} 
+
+        {% comment %} success_url = "{% url 'locations:order_history/1/details/' %}" {% endcomment %}
+        success_url = "{% url 'locations:order_history' %}"
     </script>
 
 {% endblock %}
 
 {% block content %}
     
-    <h1> Select your desired vehicle 🚲/🛴 and look for your nearest vehicle 🗺️  </h1> 
-    <div class="vehicle-selection">
-        <img id="bike-icon" class="vehicle-icon" src="{% static 'images/bike.svg' %}" alt="Bike">
-        <img id="scooter-icon" class="vehicle-icon" src="{% static 'images/scooter.svg' %}" alt="Scooter">
-      </div>
+<h1> Return your vehicle at a nearby dedicated spot </h1> 
+<p id="timer"></p>
+<p id="price"></p>
+
+
 <div id="map"></div>
-<div>
+<div class="container">
     {% comment %} Store variables from context here {% endcomment %}
     
-<div> <button id="search"> Find nearest vehicle</button> </div>
+<button id="search"> Find nearest vehicle</button> 
     {% if user.is_authenticated %}
-    <button id="create-order-button" onclick="createOrder()">Create Order</button>
-    <h2> Rent! </h2>
+    <button id="submit-button" >Return </button>
     <!-- code for authenticated user -->
     {% else %}
         <h2> Register here! {{user.username}} </h2>
@@ -65,7 +64,8 @@
  </div>
 
 
- <script type="text/javascript" src="{% static 'js/map_script.js' %}"></script>
+ <script type="text/javascript" src="{% static 'js/map_common.js' %}"></script>
+ <script type="text/javascript" src="{% static 'js/return_order.js' %}"></script>
 
  {% endblock %}
 

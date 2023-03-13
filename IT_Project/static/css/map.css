@@ -18,9 +18,12 @@ h1 {
 
 }
 
+
 h1 {
   font-size: 24px;
 }
+
+
 
 /* Adjust font size for smaller devices */
 @media (max-width: 768px) {
@@ -57,4 +60,81 @@ h1 {
   
   .vehicle-icon:not(.selected) {
     filter: grayscale(100%);
+  }
+
+  #timer {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin: 10px 0;
+    text-align: center;
+  }
+  
+#timer span {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 50%;
+    border: 2px solid #333;
+    margin: 0 10px;
+    font-size: 28px;
+  }
+
+  #price {
+    font-size: 2em;
+    font-weight: bold;
+    color: #008080;
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #bbe1e1;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  button#search {
+    font-size: 18px;
+    align-items: center;
+    align-content: center;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: block;
+    margin: 0 auto;
+    margin-top: 20px;
+
+  }
+  
+  button#search:hover {
+    background-color: #0062cc;
+  }
+
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  button#submit-button {
+    font-size: 18px;
+    align-items: center;
+    align-content: center;
+    font-weight: bold;
+    color: #fff;
+    background-color: rgb(50, 180, 71);
+    border: none;
+    border-radius: 5px;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: block;
+    margin: 0 auto;
+    margin-top: 20px;
   }

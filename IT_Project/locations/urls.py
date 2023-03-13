@@ -10,5 +10,7 @@ urlpatterns = [
     path('order_history/', views.order_history,name='order_history'),
     path('order_history/<int:nid>/details/', views.order_detail),
     path('create_order/', views.create_order, name='create_order'),
+    path('return_order/', views.return_order, name='return_order'),
+    path('conclude_order/', views.conclude_order, name='conclude_order'),
 
 ]
