@@ -1,0 +1,77 @@
+{% extends "locations/base.html" %}
+{% load static %}
+
+{% block title %} Rent a vehicle {% endblock %}
+
+{% block extrahead %}
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css" rel="stylesheet">
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js">
+    </script>
+    <script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
+    <link rel="stylesheet"
+    href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css"
+    type="text/css">
+    
+    <script>  
+        var locations = [];
+        username = '{{user.username}}'
+        {% comment %} {% for loc in locations %}
+        locations.push({longitude: {{loc.longitude}}, latitude: {{loc.latitude}}, address:'{{loc.address}}', id:'{{loc.id}}'})
+        {% endfor %}  {% endcomment %}
+    
+        var locations_with_bikes = [];
+        {% for loc in locations_with_bikes %}
+        locations_with_bikes.push({longitude: {{loc.longitude}}, latitude: {{loc.latitude}}, address:'{{loc.address}}', id:'{{loc.id}}'})
+        {% endfor %}  
+    
+        var locations_with_scooters = [];
+        {% for loc in locations_with_scooters %}
+        locations_with_scooters.push({longitude: {{loc.longitude}}, latitude: {{loc.latitude}}, address:'{{loc.address}}', id:'{{loc.id}}'})
+        {% endfor %}
+    
+        access_token = '{{ mapbox_access_token }}'
+    </script>
+
+{% endblock %}
+
+{% block content %}
+    
+    <h1> Select your desired vehicle 🚲/🛴 and look for your nearest vehicle 🗺️  </h1> 
+    <div class="vehicle-selection">
+        <img id="bike-icon" class="vehicle-icon" src="{% static 'images/bike.svg' %}" alt="Bike">
+        <img id="scooter-icon" class="vehicle-icon" src="{% static 'images/scooter.svg' %}" alt="Scooter">
+      </div>
+<div id="map"></div>
+<div>
+    {% comment %} Store variables from context here {% endcomment %}
+    
+<div> <button id="search"> Find nearest vehicle</button> </div>
+    {% if user.is_authenticated %}
+    <button id="create-order-button" onclick="createOrder()">Create Order</button>
+    <h2> Rent! </h2>
+    <!-- code for authenticated user -->
+    {% else %}
+        <h2> Register here! {{user.username}} </h2>
+        <!-- code for unauthenticated user -->
+    {% endif %}
+ </div>
+
+
+ <script type="text/javascript" src="{% static 'js/map_script.js' %}"></script>
+
+ {% endblock %}
+
+
+
+
+
+ 
+
