@@ -48,6 +48,7 @@ def return_order(request):
     # If user is not logged in, redirect them
     if request.user is None or not request.user.is_authenticated:
         return redirect("/accounts/login")
+
     # Get customer
     username = request.user.username
     logged_user  = CustomUser.objects.get(user = User.objects.get(username = username))
@@ -148,7 +149,7 @@ def return_order(request):
 #             return redirect("/")
 #         else:
 #             messages.error(request, "Invalid username or password.")
-#             return redirect("/login")
+#             return redirect("/")
 #     else:
 #         return render(request, "locations/login.html")
 
@@ -225,12 +226,55 @@ def conclude_order(request):
     return JsonResponse({'status': 'success'})
 
 
+
+def deposit(request):
+    if request.user is None or not request.user.is_authenticated:
+        return redirect("/accounts/login")
+
+    if request.method == "POST":
+        depositAmount = request.POST.get("depositAmount")
+        username = request.user.username
+        logged_customer = CustomUser.objects.get(user=User.objects.get(username=username))
+
+        logged_customer.balance += depositAmount
+        logged_customer.save()
+
+        return render(request, "/")
+    else:
+        return render(request, "locations/deposit.html")
     
 
-    
+def payment(request,nid):
+    if request.user is None or not request.user.is_authenticated:
+        return redirect("/accounts/login")
 
+    if request.method == "POST":
+        username = request.user.username
+        logged_customer = CustomUser.objects.get(user=User.objects.get(username=username))
+        balance = logged_customer.balance
+        queryset = models.Order.objects.filter(id=nid)
+        cost = queryset.cost
 
+        queryset = models.Order.objects.filter(id=nid)
 
+        if(balance>cost):
+            queryset.is_paid=1
+            queryset.save()
+            logged_customer.balance -= cost
+            logged_customer.save()
+            return render(request, "/order_history/")
+        else:
+            return render(request, "/order_history/")
+
+    else:
+        username = request.user.username
+        logged_customer = CustomUser.objects.get(user=User.objects.get(username=username))
+        balance = logged_customer.balance
+        queryset = models.Order.objects.filter(id=nid)
+        cost=queryset.cost
+        context={'balance':balance , 'cost':cost}
+
+        return render(request, "locations/payment.html", context)
 
 
     

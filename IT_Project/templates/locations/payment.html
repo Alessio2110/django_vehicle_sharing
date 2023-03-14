@@ -16,11 +16,11 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">user order history details</a>
+        <a class="navbar-brand" href="#">payment</a>
       </div>
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
-          <li><a href="/order_history">order_history</a></li>
+          <li><a href="/">home</a></li>
 
         </ul>
         <ul class="nav navbar-nav navbar-right">
@@ -39,52 +39,15 @@
     </div>
   </nav>
 
-  <div>
-      <div class="container">
-        <div class="panel panel-default">
-      <div class="panel-heading">order details</div>
+  <p>Your balance: {{ cona }}</p>
+  <p>you need pay: {{ conb }}</p>
+  <form method="POST" action="/order_history/">
+  {% csrf_token %}
+  <input type="submit" name="pay" value="pay" />
+  </form>
 
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>order ID</th>
-            <th>start time</th>
-            <th>final time</th>
-            <th>is_paid</th>
-            <th>customer_id</th>
-            <th>final_location_id</th>
-            <th>initial_location_id</th>
-            <th>vehicle_id</th>
-            <th>cost</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for obj in queryset %}
-          {% if obj.customer_id == user.id %}
-          <tr>
-            <th>{{obj.id}}</th>
-            <td>{{ obj.initial_time|date:"H:i" }}</td>
-            <td>{{ obj.final_time|date:"H:i" }}</td>
-            <td>{{ obj.is_paid }}</td>
-            <td>{{ obj.customer_id }}</td>
-            <td>{{ obj.final_location_id }}</td>
-            <td>{{ obj.initial_location_id }}</td>
-            <td>{{ obj.vehicle_id }}</td>
-            <td>{{ obj.cost }}</td>
-<!--            <td>-->
-<!--              <a class="btn btn-primary btn-xs">details</a>-->
-<!--            </td>-->
-          </tr>
-          {% endif%}
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-      </div>
-  </div>
-  </div>
 
-<script src="{% static 'js/jquery-3.6.4.min.js' %}"></script>
+  <script src="{% static 'js/jquery-3.6.4.min.js' %}"></script>
 <script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.min.js' %}"></script>
 </body>
 </html>
