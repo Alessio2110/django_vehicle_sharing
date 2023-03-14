@@ -48,6 +48,7 @@ def return_order(request):
     # If user is not logged in, redirect them
     if request.user is None or not request.user.is_authenticated:
         return redirect("/accounts/login")
+
     # Get customer
     username = request.user.username
     logged_user  = CustomUser.objects.get(user = User.objects.get(username = username))
@@ -148,7 +149,7 @@ def return_order(request):
 #             return redirect("/")
 #         else:
 #             messages.error(request, "Invalid username or password.")
-#             return redirect("/login")
+#             return redirect("/")
 #     else:
 #         return render(request, "locations/login.html")
 
@@ -225,107 +226,55 @@ def conclude_order(request):
     return JsonResponse({'status': 'success'})
 
 
-def register(request):
-    # if request.method == "POST":
-    #     firstname = request.POST.get("firstname").strip()
-    #     lastname = request.POST.get("lastname").strip()
-    #     username = request.POST.get("username").strip()
-    #     passwd = request.POST.get("passwd").strip()
-    #     email =  request.POST.get("email").strip()
-    #
-    #     with sqlite3.connect("./db.sqlite3") as db:
-    #         cursor = db.cursor()
-    #         cursor.execute(
-    #         """SELECT username
-    #                 From locations_customuser
-    #                 WHERE username= '{}' """.format(username)
-    #     )
-    #     res = cursor.fetchone()
-    #     if res:
-    #         db.close()
-    #         messages.error(request, "Sorry,the username existed.")
-    #         return redirect("/register")
-    #     elif username=='' or passwd=='' or firstname=='' or lastname=='':
-    #         db.close()
-    #         messages.error(request, "Sorry,the username or passwd or firstname or lastname null.")
-    #         return redirect("/register")
-    #     else:
-    #         cursor.execute(
-    #             """INSERT INTO locations_customuser (password,is_superuser,username , first_name, last_name,email,is_staff,is_active,date_joined,is_operator,balance)
-    #                 VALUES ('{}', '{}', '{}', '{}','{}','{}','{}','{}','{}','{}','{}')""".format(passwd,0,username, firstname,lastname, email,0,0,0,0,0)
-    #         )
-    #         db.commit()
-    #         db.close()
-    #         # return redirect("/login")
-    #         return redirect("/")
-    # else:
-        return render(request, "registration/register.html")
-
-def login(request):
-    # if request.method == "POST":
-    #     username = request.POST.get("username").strip()
-    #     passwd = request.POST.get("passwd").strip()
-    #
-    #     with sqlite3.connect("./db.sqlite3") as db:
-    #         cursor = db.cursor()
-    #         cursor.execute(
-    #             """SELECT  username, password
-    #                 From locations_customuser
-    #                 WHERE username= '{}' """.format(username)
-    #     )
-    #     res = cursor.fetchone()
-    #     db.close()
-    #     if res:
-    #         if passwd == res[1]:
-    #             return redirect("/")
-    #             # return redirect("/customer")
-    #
-    #         else:
-    #              messages.error(request, "The password is wrong.")
-    #              # return render(request, "login.html")
-    #              return redirect("/login")
-    #     else:
-    #         messages.error(request, "The username does not exist.")
-    #         #return render(request, "login.html")
-    #         return redirect("/login")
-    #
-    # # elif request.method == "GET":
-    # #     return redirect("/register")
-    #
-    # else:
-        return render(request, "registration/login.html")
-
 
 def deposit(request):
+    if request.user is None or not request.user.is_authenticated:
+        return redirect("/accounts/login")
+
     if request.method == "POST":
         depositAmount = request.POST.get("depositAmount")
-        cust_id = request.session["cust_id"]
-        with sqlite3.connect("./vehicle_share.db") as db:
-            cursor = db.cursor()
-            cursor.execute("""select balance
-                        from Customer
-                        where cust_id = '{}'""".format(cust_id))
-            current_balence = cursor.fetchall()
-            # print(current_balence[0][0])
-            # current_balence = current_balence[0]
-            depositAmount = float(depositAmount)+ current_balence[0][0]
-            # update the balance of current costomer
-            cursor.execute(
-                    """UPDATE Customer
-                        set balance = '{}'
-                        WHERE cust_id = '{}'
-                    """.format(depositAmount, cust_id)
-                    )
-            db.commit()
-        db.close()
-        # return HttpResponse("Deposit successfully!")
-        #return render(request, "depositSuccessfully.html")
+        username = request.user.username
+        logged_customer = CustomUser.objects.get(user=User.objects.get(username=username))
+
+        logged_customer.balance += depositAmount
+        logged_customer.save()
+
+        return render(request, "/")
     else:
         return render(request, "locations/deposit.html")
     
 
+def payment(request,nid):
+    if request.user is None or not request.user.is_authenticated:
+        return redirect("/accounts/login")
 
+    if request.method == "POST":
+        username = request.user.username
+        logged_customer = CustomUser.objects.get(user=User.objects.get(username=username))
+        balance = logged_customer.balance
+        queryset = models.Order.objects.filter(id=nid)
+        cost = queryset.cost
 
+        queryset = models.Order.objects.filter(id=nid)
+
+        if(balance>cost):
+            queryset.is_paid=1
+            queryset.save()
+            logged_customer.balance -= cost
+            logged_customer.save()
+            return render(request, "/order_history/")
+        else:
+            return render(request, "/order_history/")
+
+    else:
+        username = request.user.username
+        logged_customer = CustomUser.objects.get(user=User.objects.get(username=username))
+        balance = logged_customer.balance
+        queryset = models.Order.objects.filter(id=nid)
+        cost=queryset.cost
+        context={'balance':balance , 'cost':cost}
+
+        return render(request, "locations/payment.html", context)
 
 
     

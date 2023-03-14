@@ -68,7 +68,8 @@
             {% if obj.is_paid %}
             <td class="cost"> {{ obj.cost}} </td>
             {% else %}
-            <td> {{ obj.cost}} </td>
+            <td> {{ obj.cost}} <a class="btn btn-primary btn-xs" href="/order_history/{{obj.id}}/payment/">pay</a></td>
+
             {% endif %}
             <td>
               <a class="btn btn-primary btn-xs" href="/order_history/{{obj.id}}/details/">details</a>
