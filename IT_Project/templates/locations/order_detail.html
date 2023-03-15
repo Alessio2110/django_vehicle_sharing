@@ -1,13 +1,12 @@
+{% extends "locations/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.min.css' %}">
-</head>
-<body>
-  <nav class="navbar navbar-default">
+
+{% block title %}
+    User Order History Details
+{% endblock %}
+
+{% block content %}
+    <nav class="navbar navbar-default">
     <div class="container-fluid">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -83,8 +82,5 @@
       </div>
   </div>
   </div>
+{% endblock %}
 
-<script src="{% static 'js/jquery-3.6.4.min.js' %}"></script>
-<script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.min.js' %}"></script>
-</body>
-</html>
