@@ -7,8 +7,11 @@
 
 {% block content %}
   <div class="input-group">
-    <input type="text" class="form-control" placeholder="deposit amount" aria-describedby="basic-addon2" style="width:160px; height:25px;">
+    <form  method="POST" >
+      {% csrf_token %}
+    <input type="text" class="form-control" placeholder="deposit amount" aria-describedby="basic-addon2" style="width:160px; height:25px;" name="depositAmount">
     <button type="submit" name="deposit" id="deposit" value="none">Deposit</button>
+    </form>
   </div>
   <button onclick="window.location.href='/'" type="button" id="customer" value="none">Return to Homepage</button>
 {% endblock %}
