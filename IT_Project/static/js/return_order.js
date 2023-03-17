@@ -1,6 +1,7 @@
 
 amount = cost_for_initial_order + cost_per_minute * 130 
 console.log(amount)
+
 $(document).ready(function() {
     var datetime = new Date(datetimeString);  // Convert the datetime string to a Date object
     console.log("Datetime:", datetime)
@@ -23,46 +24,14 @@ $(document).ready(function() {
     }, 1000);
   });
 
-
-
-  // Default selected icon is bike
-
-
-
-// //AJAX POST REQUEST: CREATE ORDER
-// function createOrder(){
-//     fetch('/create_order/', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'X-CSRFToken': getCookie('csrftoken')
-//         },
-//         body: JSON.stringify({
-//           username: username,
-//           vehicle_type: selected,
-//           loc_id: loc_id
-//         })
-//       }).then(function(response) {
-//         if (response.ok) {
-//           window.location.href = '/success/'; // Redirect to the success page
-//         } else {
-//           // Handle errors
-//         }
-//       }).catch(function(error) {
-//         // Handle errors
-//       });
-// }
 document.getElementById("submit-button").addEventListener("click", function() {
-    console.log("Clicked")
     if (location_address == null){
         alert("No location chosen: find a secure place nearby to leave your vehicle ")
         return;
     }
     if (confirm("Are you sure you are ready to leave the vehicle at '" + location_address + "' ?")) {
       concludeOrder()
-      console.log("YEAH")
     } else {
-      console.log("NOPE!")
     }
   });
 
