@@ -12,7 +12,6 @@ urlpatterns = [
     path('create_order/', views.create_order, name='create_order'),
     path('return_order/', views.return_order, name='return_order'),
     path('conclude_order/', views.conclude_order, name='conclude_order'),
-    path('deposit/', views.deposit, name='conclude_order'),
+    path('deposit/', views.deposit, name='deposit'),
     path('order_history/<int:nid>/payment/', views.payment),
-
 ]

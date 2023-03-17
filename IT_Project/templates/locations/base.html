@@ -14,18 +14,27 @@
     {% endblock %}
 </head>
 <body>
+        <div class="navbar">
+        {% if unreturned %}
+        <a href="{% url 'locations:return_order' %}" class = "important"> Return a vehicle</a>
 
-    <div class="navbar">
+        {% else %}
+        <a href="{% url 'locations:index' %}"> Rent a vehicle</a>
+
+        {% endif %}
+
         {% if user.is_authenticated %}
         <a href="{% url 'auth_logout' %}?next=/" class = "authentication">Logout</a>
+
+        <a href="{% url 'locations:order_history' %}">Order History</a>
+        <a href="{% url 'locations:deposit' %}"> Top-up </a>
         {% else %}
         <a href="{% url 'auth_login' %}" class = "authentication" >Login</a>
 
+
         <a href="{% url 'registration_register' %}" class = "authentication"> Sign up </a>
         {% endif %}
-        <a href="{% url 'locations:index' %}"> Rent a vehicle</a>
 
-        <a href="{% url 'locations:order_history' %}">Order History</a>
     </div>
 
     <div class="container-fluid">

@@ -41,9 +41,18 @@ body {
     text-decoration: none;
 }
 
+.navbar .important {
+    background-color: rgb(183, 13, 13);
+}
+
 .navbar a:hover {
     background-color: #ddd;
     color: black;
+}
+
+.navbar .important:hover {
+    background-color: red;
+    color:black;
 }
 
 @media screen and (max-width: 600px) {

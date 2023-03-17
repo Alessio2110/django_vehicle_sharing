@@ -66,94 +66,6 @@ def return_order(request):
 
     return render(request, 'locations/return.html', context=context)
 
-# def register(request):
-#     if request.method == "POST":
-#         firstname = request.POST.get("firstname").strip()
-#         lastname = request.POST.get("lastname").strip()
-#         username = request.POST.get("username").strip()
-#         passwd = request.POST.get("passwd").strip()
-#         email =  request.POST.get("email").strip()
-
-#         with sqlite3.connect("./db.sqlite3") as db:
-#             cursor = db.cursor()
-#             cursor.execute(
-#             """SELECT username
-#                     From locations_customuser
-#                     WHERE username= '{}' """.format(username)
-#         )
-#         res = cursor.fetchone()
-#         if res:
-#             db.close()
-#             messages.error(request, "Sorry,the username existed.")
-#             return redirect("/register")
-#         elif username=='' or passwd=='' or firstname=='' or lastname=='':
-#             db.close()
-#             messages.error(request, "Sorry,the username or passwd or firstname or lastname null.")
-#             return redirect("/register")
-#         else:
-#             cursor.execute(
-#                 """INSERT INTO locations_customuser (password,is_superuser,username , first_name, last_name,email,is_staff,is_active,date_joined,is_operator,balance)
-#                     VALUES ('{}', '{}', '{}', '{}','{}','{}','{}','{}','{}','{}','{}')""".format(passwd,0,username, firstname,lastname, email,0,0,0,0,0)
-#             )
-#             db.commit()
-#             db.close()
-#             # return redirect("/login")
-#             return redirect("/")
-#     else:
-#         return render(request, "locations/register.html")
-
-# def login(request):
-#     if request.method == "POST":
-#         username = request.POST.get("username").strip()
-#         passwd = request.POST.get("passwd").strip()
-
-#         with sqlite3.connect("./db.sqlite3") as db:
-#             cursor = db.cursor()
-#             cursor.execute(
-#                 """SELECT  username, password
-#                     From locations_customuser
-#                     WHERE username= '{}' """.format(username)
-#         )
-#         res = cursor.fetchone()
-#         db.close()
-#         if res:
-#             if passwd == res[1]:
-#                 return redirect("/")
-#                 # return redirect("/customer")
-
-#             else:
-#                  messages.error(request, "The password is wrong.")
-#                  # return render(request, "login.html")
-#                  return redirect("/login")
-#         else:
-#             messages.error(request, "The username does not exist.")
-#             #return render(request, "login.html")
-#             return redirect("/login")
-
-#     # elif request.method == "GET":
-#     #     return redirect("/register")
-
-#     else:
-#         return render(request, "locations/login.html")
-
-
-# from django.contrib.auth import authenticate, login
-
-# def login(request):
-#     if request.method == "POST":
-#         username = request.POST.get("username").strip()
-#         password = request.POST.get("passwd").strip()
-#         user = authenticate(request, username=username, password=password)
-#         if user is not None:
-#             login(request, user)
-#             return redirect("/")
-#         else:
-#             messages.error(request, "Invalid username or password.")
-#             return redirect("/")
-#     else:
-#         return render(request, "locations/login.html")
-
-
 def order_history(request):
 
     queryset = models.Order.objects.all()
@@ -215,7 +127,7 @@ def conclude_order(request):
     order.final_time = datetime.datetime.now()
 
     # Calculate duration and cost
-    duration = order.initial_time - order.final_time 
+    duration = order.final_time - order.initial_time
     duration_in_seconds = duration.total_seconds()
     duration_in_minutes = int(duration_in_seconds / 60)
     order.cost = (duration_in_minutes * order.vehicle.type.cost_per_minute_in_cent + order.vehicle.type.cost_for_initial_order) / 100
@@ -255,9 +167,9 @@ def payment(request,nid):
         queryset = models.Order.objects.filter(id=nid)
         cost = queryset.cost
 
-        queryset = models.Order.objects.filter(id=nid)
+        # queryset = models.Order.objects.get(id=nid)
 
-        if(balance>cost):
+        if(balance > cost):
             queryset.is_paid=1
             queryset.save()
             logged_customer.balance -= cost
@@ -270,7 +182,7 @@ def payment(request,nid):
         username = request.user.username
         logged_customer = CustomUser.objects.get(user=User.objects.get(username=username))
         balance = logged_customer.balance
-        queryset = models.Order.objects.filter(id=nid)
+        queryset = models.Order.objects.get(id=nid)
         cost=queryset.cost
         context={'balance':balance , 'cost':cost}
 
