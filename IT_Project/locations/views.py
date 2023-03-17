@@ -73,17 +73,17 @@ def order_history(request):
 
     username = request.user.username
     logged_customer = CustomUser.objects.get(user=User.objects.get(username=username))
-    queryset = models.Order.objects.filter(customer_id=logged_customer.user.id)
+    queryset = models.Order.objects.filter(customer=logged_customer).order_by('id').reverse()
 
-    return render(request, 'locations/order_history.html', {'queryset':queryset})
+    return render(request, 'locations/order_history.html', {'queryset': queryset})
 
 def order_detail(request,nid):
     if request.user is None or not request.user.is_authenticated:
         return redirect("/accounts/login")
 
-    queryset = models.Order.objects.filter(id=nid)
+    order = models.Order.objects.get(id=nid)
 
-    return render(request, 'locations/order_detail.html', {'queryset':queryset})
+    return render(request, 'locations/order_detail.html', {'obj': order})
 
 # Create new order given data from user
 def create_order(request):
@@ -149,19 +149,20 @@ def conclude_order(request):
 def deposit(request):
     if request.user is None or not request.user.is_authenticated:
         return redirect("/accounts/login")
-
+    username = request.user.username
+    logged_customer = CustomUser.objects.get(user=User.objects.get(username=username))
     if request.method == "POST":
         depositAmount = Decimal(request.POST.get("depositAmount"))
-        username = request.user.username
-        logged_customer = CustomUser.objects.get(user=User.objects.get(username=username))
-
+        
         balance = logged_customer.balance
 
         logged_customer.balance = depositAmount+balance
         logged_customer.save()
-        return redirect("/")
+        return redirect("/deposit")
     else:
-        return render(request, "locations/deposit.html")
+        context = {}
+        context['customer'] = logged_customer
+        return render(request, "locations/deposit.html", context = context)
     
 
 def payment(request,nid):

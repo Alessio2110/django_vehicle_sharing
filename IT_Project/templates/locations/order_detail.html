@@ -27,8 +27,8 @@
           </tr>
         </thead>
         <tbody>
-          {% for obj in queryset %}
-          {% if obj.customer_id == user.id %}
+          {{ user.id}}
+          {% if obj.customer.user.id == user.id %}
           <tr>
             <th>{{obj.id}}</th>
             <td>{{ obj.initial_time|date:"H:i" }}</td>
@@ -44,7 +44,6 @@
 <!--            </td>-->
           </tr>
           {% endif%}
-          {% endfor %}
         </tbody>
       </table>
     </div>

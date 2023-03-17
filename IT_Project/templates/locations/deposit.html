@@ -4,8 +4,15 @@
 {% block title %}
       Deposit
 {% endblock %}
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/deposit.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}">
 
+{% endblock%}
 {% block content %}
+
+<p id="price"> 💳 £{{ customer.balance}}</p>
+
   <div class="input-group">
     <form  method="POST" >
       {% csrf_token %}
@@ -13,7 +20,8 @@
     <button type="submit" name="deposit" id="deposit" value="none">Deposit</button>
     </form>
   </div>
-  <button onclick="window.location.href='/'" type="button" id="customer" value="none">Return to Homepage</button>
+  {% comment %} <button onclick="window.location.href='/'" type="button" id="customer" value="none">Return to Homepage</button> {% endcomment %}
+
 {% endblock %}
 
 
