@@ -3,6 +3,7 @@ import json
 import sqlite3
 from django.contrib import messages
 from django.views.generic.edit import CreateView
+from decimal import Decimal
 
 from . import models
 from django.shortcuts import render, redirect, HttpResponse
@@ -155,12 +156,18 @@ def return_order(request):
 
 
 def order_history(request):
+    if request.user is None or not request.user.is_authenticated:
+        return redirect("/accounts/login")
 
-    queryset = models.Order.objects.all()
+    username = request.user.username
+    logged_customer = CustomUser.objects.get(user=User.objects.get(username=username))
+    queryset = models.Order.objects.filter(customer_id=logged_customer.user.id)
 
     return render(request, 'locations/order_history.html', {'queryset':queryset})
 
 def order_detail(request,nid):
+    if request.user is None or not request.user.is_authenticated:
+        return redirect("/accounts/login")
 
     queryset = models.Order.objects.filter(id=nid)
 
@@ -232,14 +239,15 @@ def deposit(request):
         return redirect("/accounts/login")
 
     if request.method == "POST":
-        depositAmount = request.POST.get("depositAmount")
+        depositAmount = Decimal(request.POST.get("depositAmount"))
         username = request.user.username
         logged_customer = CustomUser.objects.get(user=User.objects.get(username=username))
 
-        logged_customer.balance += depositAmount
-        logged_customer.save()
+        balance = logged_customer.balance
 
-        return render(request, "/")
+        logged_customer.balance = depositAmount+balance
+        logged_customer.save()
+        return redirect("/")
     else:
         return render(request, "locations/deposit.html")
     
@@ -249,29 +257,31 @@ def payment(request,nid):
         return redirect("/accounts/login")
 
     if request.method == "POST":
+        print("b")
         username = request.user.username
         logged_customer = CustomUser.objects.get(user=User.objects.get(username=username))
         balance = logged_customer.balance
-        queryset = models.Order.objects.filter(id=nid)
-        cost = queryset.cost
-
-        queryset = models.Order.objects.filter(id=nid)
+        order = models.Order.objects.get(id=nid)
+        cost = order.cost
 
         if(balance>cost):
-            queryset.is_paid=1
-            queryset.save()
+
+            order.is_paid=1
+            order.save()
             logged_customer.balance -= cost
             logged_customer.save()
-            return render(request, "/order_history/")
+            return redirect("/order_history/")
+
         else:
             return render(request, "/order_history/")
 
     else:
+        print("a")
         username = request.user.username
         logged_customer = CustomUser.objects.get(user=User.objects.get(username=username))
         balance = logged_customer.balance
-        queryset = models.Order.objects.filter(id=nid)
-        cost=queryset.cost
+        order = models.Order.objects.get(id=nid)
+        cost=order.cost
         context={'balance':balance , 'cost':cost}
 
         return render(request, "locations/payment.html", context)
