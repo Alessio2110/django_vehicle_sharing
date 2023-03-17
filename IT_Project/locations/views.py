@@ -200,3 +200,15 @@ def payment(request,nid):
 
     
 
+# from django.contrib.auth import get_user_model
+# from registration.backends.default.views import RegistrationView
+# from .forms import CustomUserRegistrationForm
+# from .models import CustomUser
+
+# class CustomUserRegistrationView(RegistrationView):
+#     form_class = CustomUserRegistrationForm
+
+#     def register(self, form):
+#         user = super().register(form)
+#         custom_user = CustomUser.objects.create(user=user)
+#         return user

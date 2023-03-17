@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'vshare',
     'registration',
     'locations',
 ]
@@ -143,7 +142,7 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 # If True, users can register.
 REGISTRATION_OPEN = True
 # If True, the user will be automatically logged in after registering.
-REGISTRATION_AUTO_LOGIN = True
+REGISTRATION_AUTO_LOGIN = False
 # The URL that Django redirects users to after logging in.
 LOGIN_REDIRECT_URL = 'locations:index'
 # The page users are directed to if they are not logged in.
