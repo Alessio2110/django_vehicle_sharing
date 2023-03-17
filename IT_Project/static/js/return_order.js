@@ -60,9 +60,7 @@ document.getElementById("submit-button").addEventListener("click", function() {
     }
     if (confirm("Are you sure you are ready to leave the vehicle at '" + location_address + "' ?")) {
       concludeOrder()
-      console.log("YEAH")
     } else {
-      console.log("NOPE!")
     }
   });
 
