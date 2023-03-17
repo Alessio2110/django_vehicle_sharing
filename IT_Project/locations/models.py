@@ -25,7 +25,6 @@ class Location(models.Model):
         return super(Location, self).save(*args, **kwargs)
 
 class CustomUser(models.Model):
-    # is_operator = models.BooleanField(default=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     balance = models.DecimalField(max_digits=6, decimal_places=2,default=10.00)
 
