@@ -18,38 +18,28 @@ from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
-# class LocationView(CreateView):
-
-#     model = Location
-#     fields = ['address']
-#     template_name = 'locations/home.html'
-#     success_url = '/'
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['locations'] = Location.objects.all()
-#         context['mapbox_access_token'] = 'pk.eyJ1IjoiYWxlc3NpbzIxIiwiYSI6ImNsZWszb2twMzBoa3QzcHBnNnhqbHIwMHUifQ.AW2-2b4IYh4qqPqqzMXy8Q'
-        
-#         return context
-
-# Home to make orders
+# View to start a new order
 def index(request):
     locations_with_bikes = Location.objects.filter(vehicle__type__name='Bike').distinct() #  all locations that have at least one bike
     locations_with_scooters = Location.objects.filter(vehicle__type__name='Scooter').distinct() # all locations that have at least one scooter
+    bike = VehicleType.objects.get(name = "Bike")
+    scooter = VehicleType.objects.get(name = "Scooter")
 
     # Pass data to web page through context
     context = {}
     context['locations_with_bikes'] = locations_with_bikes 
     context['locations_with_scooters'] = locations_with_scooters
     context['mapbox_access_token'] = 'pk.eyJ1IjoiYWxlc3NpbzIxIiwiYSI6ImNsZWszb2twMzBoa3QzcHBnNnhqbHIwMHUifQ.AW2-2b4IYh4qqPqqzMXy8Q' # Mapbox token necessary to use map
-    
+    context['bike'] = bike
+    context['scooter'] = scooter
+
     return render(request, 'locations/home.html', context=context)
 
 def return_order(request):
     # If user is not logged in, redirect them
     if request.user is None or not request.user.is_authenticated:
         return redirect("/accounts/login")
-
+    
     # Get customer
     username = request.user.username
     logged_user  = CustomUser.objects.get(user = User.objects.get(username = username))
@@ -80,8 +70,11 @@ def order_history(request):
 def order_detail(request,nid):
     if request.user is None or not request.user.is_authenticated:
         return redirect("/accounts/login")
-
     order = models.Order.objects.get(id=nid)
+
+    if order.customer.user != request.user:
+        return redirect("/order_history/")
+    
 
     return render(request, 'locations/order_detail.html', {'obj': order})
 
@@ -145,7 +138,6 @@ def conclude_order(request):
     return JsonResponse({'status': 'success'})
 
 
-
 def deposit(request):
     if request.user is None or not request.user.is_authenticated:
         return redirect("/accounts/login")
@@ -153,12 +145,9 @@ def deposit(request):
     logged_customer = CustomUser.objects.get(user=User.objects.get(username=username))
     if request.method == "POST":
         depositAmount = Decimal(request.POST.get("depositAmount"))
-        
-        balance = logged_customer.balance
-
-        logged_customer.balance = depositAmount+balance
+        logged_customer.balance += depositAmount
         logged_customer.save()
-        return redirect("/deposit")
+        return redirect("/order_history/")
     else:
         context = {}
         context['customer'] = logged_customer
@@ -169,34 +158,31 @@ def payment(request,nid):
     if request.user is None or not request.user.is_authenticated:
         return redirect("/accounts/login")
 
+    username = request.user.username
+    logged_customer = CustomUser.objects.get(user=User.objects.get(username=username))
+    balance = logged_customer.balance
+    order = models.Order.objects.get(id=nid)
+    cost=order.cost
+
     if request.method == "POST":
-        print("b")
-        username = request.user.username
-        logged_customer = CustomUser.objects.get(user=User.objects.get(username=username))
-        balance = logged_customer.balance
-        order = models.Order.objects.get(id=nid)
-        cost = order.cost
-
         if(balance>cost):
-
             order.is_paid=1
             order.save()
             logged_customer.balance -= cost
             logged_customer.save()
             return redirect("/order_history/")
-
         else:
-            return render(request, "/order_history/")
+            return redirect("/deposit/")
 
-    else:
-        username = request.user.username
-        logged_customer = CustomUser.objects.get(user=User.objects.get(username=username))
-        balance = logged_customer.balance
-        order = models.Order.objects.get(id=nid)
-        cost=order.cost
-        context={'balance':balance , 'cost':cost}
+    if order.is_paid:
+       return redirect("/order_history/")
+    
+    if order.customer.user.username != logged_customer.user.username:
+        return redirect("/order_history/")
 
-        return render(request, "locations/payment.html", context)
+    context={'balance':balance , 'cost':cost, 'order': order}
+
+    return render(request, "locations/payment.html", context)
 
 
     

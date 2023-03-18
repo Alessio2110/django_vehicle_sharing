@@ -2,9 +2,12 @@
 {% load static %}
 
 {% block title %}
-    User Order History Details
+     Order Details
 {% endblock %}
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/order.css' %}">
 
+{% endblock %}
 {% block content %}
 
   <div>
@@ -27,7 +30,7 @@
           </tr>
         </thead>
         <tbody>
-          {{ user.id}}
+          {% comment %} {{ user.id}} {% endcomment %}
           {% if obj.customer.user.id == user.id %}
           <tr>
             <th>{{obj.id}}</th>

@@ -70,11 +70,9 @@ function find_closest() {
             coordinates = [loc.longitude, loc.latitude];
             location_address = loc.address
             loc_id = loc.id
-            console.log(loc_id)
         }
     }
     map.setZoom(18)
-    console.log(coordinates)
     map.setCenter(coordinates)
     map.setZoom(16)
 }
@@ -94,7 +92,7 @@ map.on('load', function () {
         const coordinates = map.getCenter();
 
         // Log the place and coordinates
-        console.log(place, coordinates);
+        // console.log(place, coordinates);
     });
 });
 
@@ -108,7 +106,7 @@ map.setMaxBounds(bounds);
 
 // Add markers
 function addMarkers(){
-    console.log("Adding markers" + locations.length)
+    // console.log("Adding markers" + locations.length)
     for (var i = 0; i < locations.length; i++) {
         var loc = locations[i];
         var marker = new mapboxgl.Marker()

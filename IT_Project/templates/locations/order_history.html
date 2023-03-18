@@ -1,13 +1,18 @@
 {% extends "locations/base.html" %}
 {% load static %}
 
-{% block title %}User Order History{% endblock %}
+{% block title %}Order History{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/order.css' %}">
+
+{% endblock %}
 
 {% block content %}
   <div class="container">
     <div class="panel panel-default">
       <!-- Default panel contents -->
-      <div class="panel-heading">order history</div>
+      <div class="panel-heading"> Order history</div>
 
       <!-- Table -->
       <table class="table table-bordered">
@@ -15,25 +20,29 @@
           <tr>
             <th>order ID</th>
             <th> Rented on</th>
-            <th> Returned</th>
+            <th> Returned at</th>
             <th> Cost (£) </th>
-            <th></th>
+            <th> See more</th>
           </tr>
         </thead>
         <tbody>
         {% for obj in queryset %}
           <tr>
             <th>{{obj.id}}</th>
-            <td>{{ obj.initial_time|date:"H:i on  D, d M Y" }}</td>
+            <td>{{ obj.initial_time|date:"d M Y, H:i" }}</td>
             <td>{{ obj.final_time|date:"H:i" }}</td>
             {% if obj.is_paid %}
             <td class="cost"> {{ obj.cost}} </td>
             {% else %}
-            <td> {{ obj.cost}} <a class="btn btn-primary btn-xs" href="/order_history/{{obj.id}}/payment/">pay</a></td>
+            <td> {{ obj.cost}} </td>
 
             {% endif %}
             <td>
-              <a class="btn btn-primary btn-xs" href="/order_history/{{obj.id}}/details/">details</a>
+              <a class="btn btn-primary btn-xs" href="/order_history/{{obj.id}}/details/"> Details</a>
+              {% if obj.is_paid %}
+              {% else %}
+              <a class="btn btn-primary btn-xs" href="/order_history/{{obj.id}}/payment/"> PAY </a>
+              {% endif %}
             </td>
           </tr>
         {% endfor %}

@@ -34,7 +34,12 @@
         {% for loc in locations_with_scooters %}
         locations_with_scooters.push({longitude: {{loc.longitude}}, latitude: {{loc.latitude}}, address:'{{loc.address}}', id:'{{loc.id}}'})
         {% endfor %}
-    
+        
+        bike_cost = {{ bike.cost_per_minute_in_cent }}
+        bike_service_fee = {{bike.cost_for_initial_order}}
+        console.log(bike_service_fee)
+        scooter_cost = {{ scooter.cost_per_minute_in_cent}}
+        scooter_service_fee = {{scooter.cost_for_initial_order}}
         access_token = '{{ mapbox_access_token }}'
         success_url = "{% url 'locations:return_order' %}"
         login_url = "{% url 'auth_login' %}"
@@ -44,9 +49,13 @@
 
 {% block content %}
     
-    <h1> Select your desired vehicle 🚲/🛴 and look for your nearest vehicle 🗺️  </h1> 
+    <h1> Select your desired vehicle 🚲/🛴 and rent a vehicle nearby 🗺️  </h1> 
     <div class="vehicle-selection">
         <img id="bike-icon" class="vehicle-icon" src="{% static 'images/bike.svg' %}" alt="Bike">
+        <div>
+            <p id = "service"> Service fee: $ </p>
+            <p id = "cost"> Cost per Minute: $ </p>
+        </div>
         <img id="scooter-icon" class="vehicle-icon" src="{% static 'images/scooter.svg' %}" alt="Scooter">
       </div>
 <div id="map"></div>
