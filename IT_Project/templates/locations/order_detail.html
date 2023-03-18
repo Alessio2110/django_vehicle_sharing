@@ -2,9 +2,12 @@
 {% load static %}
 
 {% block title %}
-    User Order History Details
+     Order Details
 {% endblock %}
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/order.css' %}">
 
+{% endblock %}
 {% block content %}
 
   <div>
@@ -15,36 +18,27 @@
       <table class="table table-bordered">
         <thead>
           <tr>
-            <th>order ID</th>
-            <th>start time</th>
-            <th>final time</th>
-            <th>is_paid</th>
-            <th>customer_id</th>
-            <th>final_location_id</th>
-            <th>initial_location_id</th>
-            <th>vehicle_id</th>
-            <th>cost</th>
+            <th>Vehicle </th>
+            <th>Order #</th>
+            <th>Day </th>
+            <th>Time returned</th>
+            <th>Duration </th>
+            <th>Cost </th>
+            <th>From </th>
+            <th>To</th>
           </tr>
         </thead>
         <tbody>
-          {% for obj in queryset %}
-          {% if obj.customer_id == user.id %}
           <tr>
-            <th>{{obj.id}}</th>
-            <td>{{ obj.initial_time|date:"H:i" }}</td>
-            <td>{{ obj.final_time|date:"H:i" }}</td>
-            <td>{{ obj.is_paid }}</td>
-            <td>{{ obj.customer_id }}</td>
-            <td>{{ obj.final_location_id }}</td>
-            <td>{{ obj.initial_location_id }}</td>
-            <td>{{ obj.vehicle_id }}</td>
-            <td>{{ obj.cost }}</td>
-<!--            <td>-->
-<!--              <a class="btn btn-primary btn-xs">details</a>-->
-<!--            </td>-->
+             <td>{{ obj.car }}</td>
+             <td>{{ obj.order_id }}</td>
+             <td>{{ obj.date }}</td>
+             <td>{{ obj.returntime }}</td>
+             <td>{{ obj.formatted_time }}</td>
+             <td>{{ obj.cost }}</td>
+             <td>{{ obj.iadd }}</td>
+             <td>{{ obj.fadd }}</td>
           </tr>
-          {% endif%}
-          {% endfor %}
         </tbody>
       </table>
     </div>

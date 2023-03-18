@@ -4,6 +4,10 @@ locations = locations_with_bikes
 const bikeIcon = document.getElementById("bike-icon");
 bikeIcon.classList.add("selected");
 const scooterIcon = document.getElementById("scooter-icon");
+const service = document.getElementById("service");
+const price = document.getElementById("cost");
+service.innerHTML = "Service Fee: $0." + bike_service_fee
+price.innerHTML = "Cost per minute: $0." + bike_cost
 
 // When bike icon is clicked
 bikeIcon.addEventListener("click", () => {
@@ -12,6 +16,8 @@ bikeIcon.addEventListener("click", () => {
     locations = locations_with_bikes
     removeMarkers()
     addMarkers()
+    service.innerHTML = "Service Fee: $0." + bike_service_fee
+    price.innerHTML = "Cost per minute: $0." + bike_cost
     bikeIcon.classList.add("selected");
     scooterIcon.classList.remove("selected");
     selected = 'Bike'
@@ -24,6 +30,9 @@ scooterIcon.addEventListener("click", () => {
     locations = locations_with_scooters
     removeMarkers()
     addMarkers()
+    service.innerHTML = "Service Fee: $0." + scooter_service_fee
+    price.innerHTML = "Cost per minute: $0." + scooter_cost
+
     scooterIcon.classList.add("selected");
     bikeIcon.classList.remove("selected");
     selected = 'Scooter'

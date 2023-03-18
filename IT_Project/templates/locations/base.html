@@ -17,10 +17,8 @@
         <div class="navbar">
         {% if unreturned %}
         <a href="{% url 'locations:return_order' %}" class = "important"> Return a vehicle</a>
-
         {% else %}
         <a href="{% url 'locations:index' %}"> Rent a vehicle</a>
-
         {% endif %}
 
         {% if user.is_authenticated %}
