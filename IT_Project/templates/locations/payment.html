@@ -8,9 +8,18 @@
 {% block content %}
 
   <p>Your balance: {{ balance }}</p>
-  <p>you need pay: {{ cost }}</p>
+  <p>you need to pay: {{ cost }}</p>
+
+  {% if balance < cost%}
+  top-up!
+  {% endif%}
   <form method="POST">
     {% csrf_token %}
-    <button type="submit" name="pay" id="pay" value="none">pay</button>
+    <div>
+      <a class="btn btn-primary btn-xs" href="/order_history/{{order.id}}/details/"> See details for order #{{order.id}}</a>
+
+    <button class= "btn btn-primary btn-xs" type="submit" name="pay" id="pay" value="none"> Pay now</button>
+    
+    </div>
   </form>
 {% endblock %}
