@@ -22,8 +22,11 @@
       {% endif%}
     </div>
     <div class="btn-wrapper">
+      <form  method="POST" >
+      {% csrf_token %}
       <a class="btn btn-primary btn-xs" href="/order_history/{{order.id}}/details/">See details for order #{{order.id}}</a>
       <button class="btn btn-primary btn-xs" type="submit" name="pay" id="pay" value="none">Pay now</button>
+      </form>
     </div>
   </div>
 {% endblock %}
