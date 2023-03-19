@@ -1,11 +1,10 @@
 {% extends 'locations/base.html' %}
-{% load static %}
-{% block title_block %}
-<link rel="stylesheet" href="{% static 'css/registration.css' %}">
+{% load static %} 
+{% block title %} Rent a vehicle {% endblock %}
 Register
 
-{% endblock %}
 {% block extrahead %}
+<link rel="stylesheet" href="{% static 'css/registration.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}"> 
 
 {% endblock %}
