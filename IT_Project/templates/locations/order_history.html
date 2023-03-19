@@ -33,15 +33,23 @@
             <td>{{ obj.final_time|date:"H:i" }}</td>
             {% if obj.is_paid %}
             <td class="cost"> {{ obj.cost}} </td>
-            {% else %}
+            {% elif obj.cost != None %}
             <td> {{ obj.cost}} </td>
+            {% else %}
+            <td>  </td>
 
             {% endif %}
             <td>
+              {% if obj.final_time != None%}
               <a class="btn btn-primary btn-xs" href="/order_history/{{obj.id}}/details/"> Details</a>
+              {% else%}
+              The orer must be terminated to see its details.
+              {% endif %}
               {% if obj.is_paid %}
               {% else %}
+              {% if obj.cost != None %}
               <a class="btn btn-primary btn-xs" href="/order_history/{{obj.id}}/payment/"> PAY </a>
+              {% endif %}
               {% endif %}
             </td>
           </tr>
