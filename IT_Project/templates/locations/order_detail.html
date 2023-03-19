@@ -41,9 +41,15 @@
           </tr>
         </tbody>
       </table>
+
+     </div>
+    {% if not obj.paid %}
+    <div class="text-center">
+        <a href="/order_history/{{obj.order_id}}/payment/" class="btn btn-primary">pay</a>
     </div>
+     {% endif %}
+  </div>
+  </div>
       </div>
-  </div>
-  </div>
 {% endblock %}
 

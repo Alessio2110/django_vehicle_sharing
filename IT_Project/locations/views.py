@@ -85,8 +85,9 @@ def order_detail(request,nid):
 
     iadd = order.initial_location.address
     fadd = order.final_location.address
+    paid = order.is_paid
 
-    obj={'car':car , 'order_id':nid, 'date': date , 'returntime':returntime , 'formatted_time': formatted_time , 'cost':cost , 'iadd':iadd , 'fadd':fadd}
+    obj={'car':car , 'order_id':nid, 'date': date , 'returntime':returntime , 'formatted_time': formatted_time , 'cost':cost , 'iadd':iadd , 'fadd':fadd , 'paid' : paid}
 
     print(obj)
     if order.customer.user != request.user:
