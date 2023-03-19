@@ -5,15 +5,18 @@
     Payment Page
 {% endblock %}
 
-{% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/payment.css' %}">
-{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/payment.css' %}">
+
+
+{% endblock%}
 
 {% block content %}
   <div class="content-wrapper">
     <div class="payment-info">
-      <p>Your balancedadasd: {{ balance }}</p>
-      <p>You need to pay: {{ cost }}</p>
+      <p>Your balance: ￡{{ balance }}</p>
+      <p>You need to pay: ￡{{ cost }}</p>
       {% if balance < cost%}
       <p>Top up!</p>
       {% endif%}
