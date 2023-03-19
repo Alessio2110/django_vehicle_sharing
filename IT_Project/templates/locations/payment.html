@@ -24,9 +24,9 @@
     <div class="btn-wrapper">
       <form  method="POST" >
       {% csrf_token %}
-      <a class="btn btn-primary btn-xs" href="/order_history/{{order.id}}/details/">See details for order #{{order.id}}</a>
+      <a class="btn btn-primary btn-xs" href="{% url 'locations:order_detail' nid=order.id %}">See details for order #{{order.id}}</a>
       {% if balance < cost%}
-      <a class="btn btn-primary btn-xs" href="/deposit/"> Top up!</a>
+      <a class="btn btn-primary btn-xs" href="{% url 'locations:deposit' %}"> Top up!</a>
       {% else %}
       <button class="btn btn-primary btn-xs" type="submit" name="pay" id="pay" value="none">Pay now</button>
       </form>
@@ -36,4 +36,5 @@
 
     </div>
   </div>
+
 {% endblock %}

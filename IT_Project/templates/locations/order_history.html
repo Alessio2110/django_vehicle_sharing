@@ -41,14 +41,16 @@
             {% endif %}
             <td>
               {% if obj.final_time != None%}
-              <a class="btn btn-primary btn-xs" href="/order_history/{{obj.id}}/details/"> Details</a>
+              {% comment %} <a class="btn btn-primary btn-xs" href="/order_history/{{obj.id}}/details/"> Details</a> {% endcomment %}
+              <a class="btn btn-primary btn-xs" href="{% url 'locations:order_detail' nid=obj.id %}"> Details</a>
+
               {% else%}
               The orer must be terminated to see its details.
               {% endif %}
               {% if obj.is_paid %}
               {% else %}
               {% if obj.cost != None %}
-              <a class="btn btn-primary btn-xs" href="/order_history/{{obj.id}}/payment/"> PAY </a>
+              <a class="btn btn-primary btn-xs" href="{% url 'locations:order_payment' nid=obj.id %}"> PAY </a>
               {% endif %}
               {% endif %}
             </td>

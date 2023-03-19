@@ -30,12 +30,16 @@
         </thead>
         <tbody>
           <tr>
-             <td>{{ obj.car }}</td>
+             <td>{{ obj.vehicle }}</td>
              <td>{{ obj.order_id }}</td>
              <td>{{ obj.date }}</td>
              <td>{{ obj.returntime }}</td>
              <td>{{ obj.formatted_time }}</td>
-             <td>{{ obj.cost }}</td>
+             <td>{{ obj.cost }}   
+              {% if obj.is_paid != True %}
+              <a class="btn btn-primary btn-xs" href="{% url 'locations:order_payment' nid=obj.order_id %}"> PAY </a>
+              {% endif %}
+             </td>
              <td>{{ obj.iadd }}</td>
              <td>{{ obj.fadd }}</td>
           </tr>
@@ -45,5 +49,6 @@
       </div>
   </div>
   </div>
+
 {% endblock %}
 

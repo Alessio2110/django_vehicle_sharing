@@ -17,6 +17,8 @@ from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404
 
 # Create your views here.
+# Persona acess token to use mapbox
+ACCESS_TOKEN_MAPBOX = 'pk.eyJ1IjoiYWxlc3NpbzIxIiwiYSI6ImNsZWszb2twMzBoa3QzcHBnNnhqbHIwMHUifQ.AW2-2b4IYh4qqPqqzMXy8Q'
 
 # View to start a new order
 def index(request):
@@ -29,7 +31,7 @@ def index(request):
     context = {}
     context['locations_with_bikes'] = locations_with_bikes 
     context['locations_with_scooters'] = locations_with_scooters
-    context['mapbox_access_token'] = 'pk.eyJ1IjoiYWxlc3NpbzIxIiwiYSI6ImNsZWszb2twMzBoa3QzcHBnNnhqbHIwMHUifQ.AW2-2b4IYh4qqPqqzMXy8Q' # Mapbox token necessary to use map
+    context['mapbox_access_token'] = ACCESS_TOKEN_MAPBOX # Mapbox token necessary to use map
     context['bike'] = bike
     context['scooter'] = scooter
 
@@ -52,7 +54,7 @@ def return_order(request):
     context['initial_time'] = unreturned_order.initial_time.strftime('%Y-%m-%d %H:%M:%S') # Initial time parsed as String
     context['cost_per_minute'] = unreturned_order.vehicle.type.cost_per_minute_in_cent # Cost per minute of the vehicle
     context['cost_for_initial_order'] = unreturned_order.vehicle.type.cost_for_initial_order # Initial cost of renting that vehicle
-    context['mapbox_access_token'] = 'pk.eyJ1IjoiYWxlc3NpbzIxIiwiYSI6ImNsZWszb2twMzBoa3QzcHBnNnhqbHIwMHUifQ.AW2-2b4IYh4qqPqqzMXy8Q'  # Mapbox token necessary to use map
+    context['mapbox_access_token'] = ACCESS_TOKEN_MAPBOX  # Mapbox token necessary to use map
     context['locations'] = Location.objects.all() # All locations
 
     return render(request, 'locations/return.html', context=context)
@@ -70,28 +72,26 @@ def order_history(request):
 def order_detail(request,nid):
     if request.user is None or not request.user.is_authenticated:
         return redirect("/accounts/login")
+ 
     order = models.Order.objects.get(id=nid)
-    car = order.vehicle.type.name
+    vehicle = order.vehicle.type.name
     date = order.initial_time.date()
 
-    returntime = order.final_time.strftime("%H:%M")
+    return_time = order.final_time.strftime("%H:%M")
     timedelta = order.final_time - order.initial_time
     hours, remainder = divmod(timedelta.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
     formatted_time = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
     cost = order.cost
-    # cost = '￡'+cost
 
-    iadd = order.initial_location.address
-    fadd = order.final_location.address
+    initial_address = order.initial_location.address
+    final_address = order.final_location.address
 
-    obj={'car':car , 'order_id':nid, 'date': date , 'returntime':returntime , 'formatted_time': formatted_time , 'cost':cost , 'iadd':iadd , 'fadd':fadd}
-
-    print(obj)
     if order.customer.user != request.user:
         return redirect("/order_history/")
-    
+
+    obj={'vehicle': vehicle , 'order_id':nid, 'date': date , 'returntime':return_time , 'formatted_time': formatted_time , 'cost':cost , 'iadd':initial_address , 'fadd':final_address, 'is_paid': order.is_paid}
 
     return render(request, 'locations/order_detail.html', {'obj': obj})
 
@@ -200,19 +200,3 @@ def payment(request,nid):
     context={'balance':balance , 'cost':cost, 'order': order}
 
     return render(request, "locations/payment.html", context)
-
-
-    
-
-# from django.contrib.auth import get_user_model
-# from registration.backends.default.views import RegistrationView
-# from .forms import CustomUserRegistrationForm
-# from .models import CustomUser
-
-# class CustomUserRegistrationView(RegistrationView):
-#     form_class = CustomUserRegistrationForm
-
-#     def register(self, form):
-#         user = super().register(form)
-#         custom_user = CustomUser.objects.create(user=user)
-#         return user
