@@ -9,7 +9,8 @@ def create_objects(sender, **kwargs):
         # Create objects here
         # CustomUser.objects.create(username='user1', password='password', is_operator=False, balance=10.00)
         # CustomUser.objects.create(username='user2', password='password', is_operator=False, balance=10.00)
-        CustomUser.objects.create(user = User.objects.create_user(username = 'user1', password = 'password'), balance = 5)
+         user = User.objects.create_user(username="user1", password="password")
+        # CustomUser.objects.create(user = User.objects.create_user(username = 'user1', password = 'password'), balance = 5)
     if Location.objects.count() == 0:
         # Location.objects.create(address='University of Strathclyde, Glasgow')
         Location.objects.create(address='Kelvinbridge Subway')
