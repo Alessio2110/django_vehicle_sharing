@@ -18,15 +18,22 @@
       <p>Your balance: ￡{{ balance }}</p>
       <p>You need to pay: ￡{{ cost }}</p>
       {% if balance < cost%}
-      <p>Top up!</p>
+      <p> Insufficient credit </p>
       {% endif%}
     </div>
     <div class="btn-wrapper">
       <form  method="POST" >
       {% csrf_token %}
       <a class="btn btn-primary btn-xs" href="/order_history/{{order.id}}/details/">See details for order #{{order.id}}</a>
+      {% if balance < cost%}
+      <a class="btn btn-primary btn-xs" href="/deposit/"> Top up!</a>
+      {% else %}
       <button class="btn btn-primary btn-xs" type="submit" name="pay" id="pay" value="none">Pay now</button>
       </form>
+
+
+      {% endif%}
+
     </div>
   </div>
 {% endblock %}
