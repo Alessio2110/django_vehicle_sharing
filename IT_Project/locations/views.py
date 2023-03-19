@@ -22,8 +22,8 @@ ACCESS_TOKEN_MAPBOX = 'pk.eyJ1IjoiYWxlc3NpbzIxIiwiYSI6ImNsZWszb2twMzBoa3QzcHBnNn
 
 # View to start a new order
 def index(request):
-    locations_with_bikes = Location.objects.filter(vehicle__type__name='Bike').distinct() #  all locations that have at least one bike
-    locations_with_scooters = Location.objects.filter(vehicle__type__name='Scooter').distinct() # all locations that have at least one scooter
+    locations_with_bikes = Location.objects.filter(vehicle__type__name='Bike', vehicle__is_available = True).distinct() #  all locations that have at least one bike
+    locations_with_scooters = Location.objects.filter(vehicle__type__name='Scooter', vehicle__is_available = True).distinct() # all locations that have at least one scooter
     bike = VehicleType.objects.get(name = "Bike")
     scooter = VehicleType.objects.get(name = "Scooter")
 
