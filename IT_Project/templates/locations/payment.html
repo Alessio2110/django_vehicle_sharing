@@ -5,21 +5,25 @@
     Payment Page
 {% endblock %}
 
+
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/payment.css' %}">
+
+
+{% endblock%}
+
 {% block content %}
-
-  <p>Your balance: {{ balance }}</p>
-  <p>you need to pay: {{ cost }}</p>
-
-  {% if balance < cost%}
-  top-up!
-  {% endif%}
-  <form method="POST">
-    {% csrf_token %}
-    <div>
-      <a class="btn btn-primary btn-xs" href="/order_history/{{order.id}}/details/"> See details for order #{{order.id}}</a>
-
-    <button class= "btn btn-primary btn-xs" type="submit" name="pay" id="pay" value="none"> Pay now</button>
-    
+  <div class="content-wrapper">
+    <div class="payment-info">
+      <p>Your balance: ￡{{ balance }}</p>
+      <p>You need to pay: ￡{{ cost }}</p>
+      {% if balance < cost%}
+      <p>Top up!</p>
+      {% endif%}
     </div>
-  </form>
+    <div class="btn-wrapper">
+      <a class="btn btn-primary btn-xs" href="/order_history/{{order.id}}/details/">See details for order #{{order.id}}</a>
+      <button class="btn btn-primary btn-xs" type="submit" name="pay" id="pay" value="none">Pay now</button>
+    </div>
+  </div>
 {% endblock %}

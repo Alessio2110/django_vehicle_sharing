@@ -71,12 +71,29 @@ def order_detail(request,nid):
     if request.user is None or not request.user.is_authenticated:
         return redirect("/accounts/login")
     order = models.Order.objects.get(id=nid)
+    car = order.vehicle.type.name
+    date = order.initial_time.date()
 
+    returntime = order.final_time.strftime("%H:%M")
+    timedelta = order.final_time - order.initial_time
+    hours, remainder = divmod(timedelta.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    formatted_time = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
+    cost = order.cost
+    # cost = '￡'+cost
+
+    iadd = order.initial_location.address
+    fadd = order.final_location.address
+
+    obj={'car':car , 'order_id':nid, 'date': date , 'returntime':returntime , 'formatted_time': formatted_time , 'cost':cost , 'iadd':iadd , 'fadd':fadd}
+
+    print(obj)
     if order.customer.user != request.user:
         return redirect("/order_history/")
     
 
-    return render(request, 'locations/order_detail.html', {'obj': order})
+    return render(request, 'locations/order_detail.html', {'obj': obj})
 
 # Create new order given data from user
 def create_order(request):
