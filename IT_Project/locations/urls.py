@@ -14,4 +14,5 @@ urlpatterns = [
     path('conclude_order/', views.conclude_order, name='conclude_order'),
     path('deposit/', views.deposit, name='deposit'),
     path('order_history/<int:nid>/payment/', views.payment, name = 'order_payment'),
+    path('payment/<int:nid>/', views.payment, name='payment'),
 ]
