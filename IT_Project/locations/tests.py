@@ -21,7 +21,7 @@ from django.contrib.auth.models import User
 from .models import CustomUser, Location, VehicleType, Vehicle, Order
 from decimal import Decimal
 
-class LocationTestCase(TestCase):
+class LocationTstCase(TestCase):
     def setUp(self):
         Location.objects.create(address="123 Main St")
 

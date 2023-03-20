@@ -67,26 +67,3 @@ class Report(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     report_type = models.ForeignKey(ReportType, on_delete=models.DO_NOTHING, null=True)
 
-# The ones below this line are the tables concerning operators
-# Operators will likely not be included in the project, so ignore them!
-
-# Probably not going to be used
-# class Repair(models.Model):
-#     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
-#     operator = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-
-
-# class locations_order(models.Model):
-#     id = models.IntegerField(primary_key=True)
-#     initial_time = models.TimeField(auto_now_add=True)
-#     final_time = models.TimeField()
-#     is_paid = models.BooleanField(default=False)
-#     customer_id = models.IntegerField()
-#     final_location_id = models.IntegerField()
-#     initial_location_id = models.IntegerField()
-#     vehicle_id = models.IntegerField()
-
-# class locations_customuser_id(models.Model):
-#     id = models.IntegerField(primary_key=True)
-#     username = models.CharField(max_length=32)
-
