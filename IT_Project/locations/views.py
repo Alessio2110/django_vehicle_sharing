@@ -70,13 +70,14 @@ def order_history(request):
     return render(request, 'locations/order_history.html', {'queryset': queryset})
 
 def order_detail(request,nid):
+    #If user it not authenticated, redirect to login
     if request.user is None or not request.user.is_authenticated:
         return redirect("/accounts/login")
- 
+    #Get data
     order = models.Order.objects.get(id=nid)
     vehicle = order.vehicle.type.name
     date = order.initial_time.date()
-
+    # Calculate duration
     return_time = order.final_time.strftime("%H:%M")
     timedelta = order.final_time - order.initial_time
     hours, remainder = divmod(timedelta.seconds, 3600)
@@ -84,10 +85,10 @@ def order_detail(request,nid):
     formatted_time = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
     cost = order.cost
-
+    # From ---> to
     initial_address = order.initial_location.address
     final_address = order.final_location.address
-
+    # If not the same customer, redirect
     if order.customer.user != request.user:
         return redirect("/order_history/")
 
@@ -156,10 +157,12 @@ def conclude_order(request):
 
 
 def deposit(request):
+    #If user is logged in
     if request.user is None or not request.user.is_authenticated:
         return redirect("/accounts/login")
     username = request.user.username
     logged_customer = CustomUser.objects.get(user=User.objects.get(username=username))
+    # If button clicked
     if request.method == "POST":
         depositAmount = Decimal(request.POST.get("depositAmount"))
         logged_customer.balance += depositAmount
@@ -172,6 +175,7 @@ def deposit(request):
     
 
 def payment(request,nid):
+    #If user is not logged in, redirect
     if request.user is None or not request.user.is_authenticated:
         return redirect("/accounts/login")
 
@@ -180,7 +184,7 @@ def payment(request,nid):
     balance = logged_customer.balance
     order = models.Order.objects.get(id=nid)
     cost=order.cost
-
+    # Update balance
     if request.method == "POST":
         if(balance>cost):
             order.is_paid=1
@@ -190,7 +194,7 @@ def payment(request,nid):
             return redirect("/order_history/")
         else:
             return redirect("/deposit/")
-
+    # If paid, go to order history
     if order.is_paid:
        return redirect("/order_history/")
     
