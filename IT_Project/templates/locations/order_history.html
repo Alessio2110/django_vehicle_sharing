@@ -41,9 +41,7 @@
             {% endif %}
             <td>
               {% if obj.final_time != None%}
-              {% comment %} <a class="btn btn-primary btn-xs" href="/order_history/{{obj.id}}/details/"> Details</a> {% endcomment %}
               <a class="btn btn-primary btn-xs" href="{% url 'locations:order_detail' nid=obj.id %}"> Details</a>
-
               {% else%}
               The orer must be terminated to see its details.
               {% endif %}
