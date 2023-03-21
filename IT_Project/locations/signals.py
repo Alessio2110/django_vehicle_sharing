@@ -2,22 +2,19 @@ import random
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from .models import CustomUser, Location, Vehicle, VehicleType, User
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 
+#When migrate, create objects
 @receiver(post_migrate)
 def create_objects(sender, **kwargs):
     if CustomUser.objects.count() == 0:
-        # Create objects here
-        # CustomUser.objects.create(username='user1', password='password', is_operator=False, balance=10.00)
-        # CustomUser.objects.create(username='user2', password='password', is_operator=False, balance=10.00)
          user = User.objects.create_user(username="user1", password="password")
-        # CustomUser.objects.create(user = User.objects.create_user(username = 'user1', password = 'password'), balance = 5)
     if Location.objects.count() == 0:
-        # Location.objects.create(address='University of Strathclyde, Glasgow')
         Location.objects.create(address='Kelvinbridge Subway')
         Location.objects.create(address='Kelvinbridge Museum, Glasgow')
         Location.objects.create(address='Glasgow University')
         Location.objects.create(address='Glasgow Central Station')
-        # Location.objects.create(address='Glasgow Queen Street, Train Station')
         Location.objects.create(address='Glasgow Caledonian University')
         Location.objects.create(address='Glasgow Royal Infirmary')
         Location.objects.create(address='Glasgow Cathedral')
@@ -29,10 +26,6 @@ def create_objects(sender, **kwargs):
         Location.objects.create(address='Glasgow St Enoch Shopping Centre')
         Location.objects.create(address='Glasgow Kelvingrove Art Gallery and Museum')
         Location.objects.create(address='Glasgow Science Centre')
-
-
-
-
 
     if VehicleType.objects.count() == 0:
         VehicleType.objects.create(name='Bike', cost_per_minute_in_cent = 30, cost_for_initial_order = 50)
@@ -50,11 +43,9 @@ def create_objects(sender, **kwargs):
                         location = Location.objects.get(id = location)
                     )
     
-from django.contrib.auth.models import User
-from django.dispatch import receiver
-from django.db.models.signals import post_save
-from .models import CustomUser
 
+
+#When you a user is created, create a customuser
 @receiver(post_save, sender=User)
 def create_custom_user(sender, instance, created, **kwargs):
     if created:
