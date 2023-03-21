@@ -59,4 +59,3 @@ from .models import CustomUser
 def create_custom_user(sender, instance, created, **kwargs):
     if created:
         CustomUser.objects.create(user=instance)
-        print("SAVED")

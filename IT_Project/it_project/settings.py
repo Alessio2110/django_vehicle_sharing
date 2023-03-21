@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-l0q40jszt6q4^krwn5alj%m-(dkf=ja-l%2@y=(ahb0wzmq8@j
 DEBUG = False
 
 ALLOWED_HOSTS = ['alessio21.pythonanywhere.com',
-                #  '127.0.0.1'
+                 '127.0.0.1'
                  ]
 
 
